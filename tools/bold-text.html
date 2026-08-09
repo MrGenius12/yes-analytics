@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free LinkedIn Bold Text Generator — YeS Analytics</title>
+<meta name="description" content="Free tool to convert normal text into bold Unicode text for LinkedIn posts. By YeS Analytics, the team behind carstats.ie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#050b18;
+    --bg-deep:#020714;
+    --bg-end:#0a1936;
+    --surface:#0e1930;
+    --surface-hi:#122140;
+    --border:#1c2c4a;
+    --text:#edf1f8;
+    --text-muted:#8b96ac;
+    --blue:#2f81fe;
+    --blue-soft:#5ea1ff;
+    --blue-dim:rgba(47,129,254,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg-base);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    background:radial-gradient(ellipse 80% 60% at 70% 10%, var(--bg-end) 0%, var(--bg-deep) 60%);
+  }
+  a{color:var(--blue-soft); text-decoration:none;}
+  .wrap{max-width:760px; margin:0 auto; padding:64px 24px 90px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue-soft);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--blue-soft); display:inline-block;}
+  h1{font-family:'Poppins', sans-serif; font-weight:700; font-size:clamp(1.8rem, 4vw, 2.6rem); line-height:1.25; margin-bottom:14px;}
+  h1 .accent{color:var(--blue-soft);}
+  p.lead{color:var(--text-muted); font-size:1.02rem; max-width:600px; margin-bottom:40px;}
+  .panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px;
+  }
+  label{font-family:'JetBrains Mono', monospace; font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:10px;}
+  textarea{
+    width:100%; min-height:90px; resize:vertical; font-family:'Inter', sans-serif; font-size:1rem;
+    background:var(--bg-deep); border:1px solid var(--border); border-radius:10px; color:var(--text);
+    padding:14px; outline:none; transition:border-color .2s ease;
+  }
+  textarea:focus{border-color:var(--blue);}
+  .style-row{display:flex; gap:10px; margin:18px 0; flex-wrap:wrap;}
+  .style-btn{
+    font-family:'JetBrains Mono', monospace; font-size:0.8rem; padding:8px 16px; border-radius:7px;
+    border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer;
+    transition:all .2s ease;
+  }
+  .style-btn.active{border-color:var(--blue); color:#fff; background:var(--blue-dim);}
+  .output-box{
+    margin-top:8px; padding:18px; background:var(--bg-deep); border:1px solid var(--border); border-radius:10px;
+    min-height:56px; font-size:1.05rem; word-break:break-word; color:var(--text);
+  }
+  .copy-btn{
+    margin-top:16px; width:100%; padding:14px; border-radius:8px; border:none; cursor:pointer;
+    background:var(--blue); color:#fff; font-weight:500; font-size:1rem; transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .copy-btn:hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(47,129,254,0.3);}
+  .copy-btn.copied{background:#22c55e;}
+  .note{
+    margin-top:28px; padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06);
+    border:1px solid rgba(47,129,254,0.18); color:var(--text-muted); font-size:0.9rem;
+  }
+  .note strong{color:var(--text);}
+  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  @media (max-width:560px){ .wrap{padding:40px 18px 70px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Free tool</div>
+  <h1>Turn your text into <span class="accent">bold Unicode</span> for LinkedIn</h1>
+  <p class="lead">LinkedIn's text box has no bold or italic button. Posts that look bold or italic use special Unicode characters instead. Type below and copy the converted text straight into your post.</p>
+
+  <div class="panel">
+    <label for="input">Your text</label>
+    <textarea id="input" placeholder="Type or paste the text you want to make bold..."></textarea>
+
+    <div class="style-row" id="styleRow">
+      <button class="style-btn active" data-style="bold">Bold</button>
+      <button class="style-btn" data-style="italic">Italic</button>
+      <button class="style-btn" data-style="boldItalic">Bold Italic</button>
+    </div>
+
+    <label>Result</label>
+    <div class="output-box" id="output">Your converted text will appear here</div>
+    <button class="copy-btn" id="copyBtn">Copy to clipboard</button>
+  </div>
+
+  <div class="note">
+    <strong>Worth knowing:</strong> these characters are separate Unicode symbols, not real formatting. Screen readers often can't read them properly, and LinkedIn's search doesn't recognise them as normal keywords. Use sparingly, e.g. for a single headline.
+  </div>
+
+  <footer>
+    <span>© <span id="year"></span> YeS Analytics</span>
+    <a href="/">← Back to yes-analytics.com</a>
+  </footer>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const maps = {
+  bold: (() => {
+    const m = {};
+    for (let i = 0; i < 26; i++) {
+      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D400+i);
+      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D41A+i);
+    }
+    for (let i = 0; i < 10; i++) m[String.fromCharCode(48+i)] = String.fromCodePoint(0x1D7CE+i);
+    return m;
+  })(),
+  italic: (() => {
+    const m = {};
+    for (let i = 0; i < 26; i++) {
+      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D434+i);
+      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D44E+i);
+    }
+    // italic h has no dedicated codepoint; fallback handled below
+    m['h'] = '\u210E';
+    return m;
+  })(),
+  boldItalic: (() => {
+    const m = {};
+    for (let i = 0; i < 26; i++) {
+      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D468+i);
+      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D482+i);
+    }
+    for (let i = 0; i < 10; i++) m[String.fromCharCode(48+i)] = String.fromCodePoint(0x1D7CE+i);
+    return m;
+  })()
+};
+
+let currentStyle = 'bold';
+const input = document.getElementById('input');
+const output = document.getElementById('output');
+const copyBtn = document.getElementById('copyBtn');
+const styleRow = document.getElementById('styleRow');
+
+function convert(text, style) {
+  const map = maps[style];
+  return [...text].map(ch => map[ch] || ch).join('');
+}
+
+function update() {
+  const result = convert(input.value, currentStyle);
+  output.textContent = result || 'Your converted text will appear here';
+}
+
+input.addEventListener('input', update);
+
+styleRow.addEventListener('click', (e) => {
+  const btn = e.target.closest('.style-btn');
+  if (!btn) return;
+  styleRow.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentStyle = btn.dataset.style;
+  update();
+});
+
+copyBtn.addEventListener('click', () => {
+  const text = output.textContent;
+  if (!text || text === 'Your converted text will appear here') return;
+  navigator.clipboard.writeText(text).then(() => {
+    copyBtn.textContent = 'Copied!';
+    copyBtn.classList.add('copied');
+    setTimeout(() => { copyBtn.textContent = 'Copy to clipboard'; copyBtn.classList.remove('copied'); }, 1500);
+  });
+});
+
+update();
+</script>
+</body>
+</html>
