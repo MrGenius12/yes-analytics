@@ -73,6 +73,7 @@
   .steps li::before{content:counter(s); position:absolute; left:16px; top:14px; width:28px; height:28px; border-radius:50%;
     background:var(--blue-dim); border:1px solid var(--blue); color:#fff; display:grid; place-items:center;
     font-family:'JetBrains Mono',monospace; font-size:0.85rem;}
+  a:not([href]){color:inherit; cursor:inherit; text-decoration:none;}
   kbd{display:inline-block; padding:0 7px; border-radius:6px; border:1px solid var(--border); background:#091226;
     font:500 0.88em 'JetBrains Mono',monospace; color:var(--cyan);}
   code{font-family:'JetBrains Mono',monospace; font-size:0.88em; color:var(--cyan);}
@@ -125,7 +126,7 @@
     <div class="cards">
       <div class="card"><h3>Bold and italic</h3><p>Select text in a post or comment and make it bold, italic, underlined, struck through or monospace. Press the same style again to take it off. Turn selected lines into bulleted or numbered lists.</p></div>
       <div class="card"><h3>Symbols in one click</h3><p>Bullets, arrows, check marks, numbers, dividers and popular emoji. A Recent item in the right-click menu repeats whatever you used last, so repeat jobs take one click.</p></div>
-      <div class="card"><h3>Side panel, toolbar and shortcuts</h3><p>Click the extension icon to open a side panel that stays beside your post. A small toolbar also appears over selected text. Or use the keys you already know: <kbd>Ctrl</kbd> <kbd>B</kbd> bold, <kbd>Ctrl</kbd> <kbd>I</kbd> italic, <kbd>Ctrl</kbd> <kbd>U</kbd> underline. Press again to undo. Extra shortcuts can be changed to anything you like.</p></div>
+      <div class="card"><h3>Side panel, toolbar and shortcuts</h3><p>Click the extension icon to open a side panel that stays beside your post. A small toolbar also appears over selected text. Or use the keys you already know: <kbd>Ctrl</kbd> + <kbd>B</kbd> bold, <kbd>Ctrl</kbd> + <kbd>I</kbd> italic, <kbd>Ctrl</kbd> + <kbd>U</kbd> underline. Press again to undo.</p></div>
     </div>
     <div class="shots" style="margin-top:16px">
       <div class="shot"><img src="assets/screenshot-2-symbols.png" width="1280" height="800" loading="lazy" alt="The Symbols tab with a grid of bullets and other symbols"></div>
@@ -137,12 +138,12 @@
     <h2>How to install and use it</h2>
     <p class="sub">It takes about a minute.</p>
     <ol class="steps">
-      <li>Open the extension page in the Chrome Web Store and click <b>Add to Chrome</b>.</li>
+      <li>Open the <a id="storeLink">extension page in the Chrome Web Store</a> and click <b>Add to Chrome</b>.</li>
       <li>Pin it so the icon is always visible. Click the puzzle icon in Chrome's toolbar, then the pin next to <b>Bold and Symbols for Posts</b>.</li>
-      <li>Open LinkedIn and write your post. Select some text and press <kbd>Ctrl</kbd> <kbd>B</kbd> for bold or <kbd>Ctrl</kbd> <kbd>I</kbd> for italic (<kbd>Cmd</kbd> on a Mac). Press the same keys again to undo. Or right-click the selection and choose <b>LinkedIn text style</b>.</li>
+      <li>Open LinkedIn and write your post. Select some text and press <kbd>Ctrl</kbd> + <kbd>B</kbd> for bold or <kbd>Ctrl</kbd> + <kbd>I</kbd> for italic. On a Mac use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>. Press the same keys again to undo. Or right-click the selection and choose <b>LinkedIn text style</b>.</li>
       <li>For a bullet, arrow or check mark, right-click in the post and choose <b>Insert symbol</b>, or click the extension icon and open the <b>Symbols</b> tab.</li>
     </ol>
-    <p class="sub" style="margin-top:16px">Want extra shortcuts of your own? The extension also has <kbd>Alt</kbd> <kbd>B</kbd> and <kbd>Alt</kbd> <kbd>I</kbd> that you can change. Open <code>chrome://extensions/shortcuts</code> in Chrome's address bar and pick your own.</p>
+    <p class="sub" style="margin-top:16px">Prefer other keys? <kbd>Alt</kbd> + <kbd>B</kbd> and <kbd>Alt</kbd> + <kbd>I</kbd> work too, and you can change them to anything you like. Open <code>chrome://extensions/shortcuts</code> in Chrome's address bar to set your own.</p>
   </section>
 
   <section id="good-to-know">
@@ -153,9 +154,9 @@
     <h2>Questions</h2>
     <details><summary>Is it really free?</summary><p>Yes. There is no sign-up, no ads and no paid tier.</p></details>
     <details><summary>Does it collect my data?</summary><p>No. It runs only on linkedin.com, works entirely inside your browser and sends nothing anywhere. Read the <a href="privacy.html">privacy policy</a>.</p></details>
-    <details><summary>Where does it work?</summary><p>On LinkedIn, in desktop Chrome. Browser extensions are not available in Chrome on phones, so on mobile use the <a href="/tools/bold-text.html">web converter</a>, copy the result and paste it into your post.</p></details>
+    <details><summary>Where does it work?</summary><p>The extension adds its buttons to LinkedIn posts and comments in desktop Chrome. Chrome on phones does not support extensions, so on mobile use the <a href="/tools/bold-text.html">web converter</a>. The styled text is made of ordinary Unicode characters, so it also shows correctly when pasted into most other apps and sites, such as X, Facebook, Instagram or WhatsApp.</p></details>
     <details><summary>Why does some text show as empty boxes?</summary><p>The styled letters are regular Unicode characters. A few fonts or older devices do not include them, so a reader may see boxes instead of letters. This is rare on modern devices.</p></details>
-    <details><summary>Who makes it?</summary><p>YeS Analytics, a small data analytics studio. Questions or ideas: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>.</p></details>
+    <details><summary>Who makes it?</summary><p><a href="https://yes-analytics.com/">YeS Analytics</a>. Questions or ideas: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>.</p></details>
   </section>
 
   <footer>
@@ -173,9 +174,13 @@
 
   if (STORE_URL) {
     const btn = document.getElementById('storeBtn');
+    const link = document.getElementById('storeLink');
     const url = STORE_URL + (STORE_URL.includes('?') ? '&' : '?') +
       'utm_source=yes-analytics&utm_medium=website&utm_campaign=extension_page';
     btn.href = url;
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
     btn.textContent = 'Add to Chrome, it’s free';
     btn.classList.remove('is-soon');
     btn.removeAttribute('aria-disabled');
