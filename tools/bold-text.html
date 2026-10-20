@@ -3,191 +3,418 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free LinkedIn Bold Text Generator — YeS Analytics</title>
-<meta name="description" content="Free tool to convert normal text into bold Unicode text for LinkedIn posts. By YeS Analytics, the team behind carstats.ie.">
+<title>Free LinkedIn Bold Text Editor, Italic and Symbols | YeS Analytics</title>
+<meta name="description" content="Write your LinkedIn post and make words bold, italic, underlined or struck through. Add lists, bullets and arrows, then copy it into LinkedIn. Free, nothing is sent anywhere. By YeS Analytics.">
+<link rel="canonical" href="https://yes-analytics.com/tools/bold-text.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free LinkedIn Bold Text Editor, Italic and Symbols">
+<meta property="og:description" content="Write your post, select a word, click Bold. Lists, bullets and arrows too. Free, nothing is sent anywhere.">
+<meta property="og:url" content="https://yes-analytics.com/tools/bold-text.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-base:#050b18;
-    --bg-deep:#020714;
-    --bg-end:#0a1936;
-    --surface:#0e1930;
-    --surface-hi:#122140;
-    --border:#1c2c4a;
-    --text:#edf1f8;
-    --text-muted:#8b96ac;
-    --blue:#2f81fe;
-    --blue-soft:#5ea1ff;
-    --blue-dim:rgba(47,129,254,0.14);
+    --bg-base:#050b18; --bg-deep:#020714; --bg-end:#0a1936; --surface:#0e1930; --surface-hi:#122140;
+    --border:#1c2c4a; --text:#edf1f8; --text-muted:#8b96ac; --blue:#2f81fe; --blue-soft:#5ea1ff;
+    --blue-dim:rgba(47,129,254,0.14); --cyan:#5eead4;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
+  [hidden]{display:none !important;}
   body{
-    background:var(--bg-base);
-    color:var(--text);
-    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
+    color:var(--text); font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
     background:radial-gradient(ellipse 80% 60% at 70% 10%, var(--bg-end) 0%, var(--bg-deep) 60%);
   }
   a{color:var(--blue-soft); text-decoration:none;}
-  .wrap{max-width:760px; margin:0 auto; padding:64px 24px 90px;}
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--blue-soft);
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:20px;
-  }
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:820px; margin:0 auto; padding:56px 24px 90px;}
+  .eyebrow{font-family:'JetBrains Mono', monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--blue-soft); display:flex; align-items:center; gap:10px; margin-bottom:20px;}
   .eyebrow::before{content:''; width:20px; height:1px; background:var(--blue-soft); display:inline-block;}
-  h1{font-family:'Poppins', sans-serif; font-weight:700; font-size:clamp(1.8rem, 4vw, 2.6rem); line-height:1.25; margin-bottom:14px;}
+  h1{font-family:'Poppins', sans-serif; font-weight:700; font-size:clamp(1.8rem, 4vw, 2.6rem); line-height:1.2; margin-bottom:14px;}
   h1 .accent{color:var(--blue-soft);}
-  p.lead{color:var(--text-muted); font-size:1.02rem; max-width:600px; margin-bottom:40px;}
-  .panel{
-    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px;
-  }
-  label{font-family:'JetBrains Mono', monospace; font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:10px;}
-  textarea{
-    width:100%; min-height:90px; resize:vertical; font-family:'Inter', sans-serif; font-size:1rem;
-    background:var(--bg-deep); border:1px solid var(--border); border-radius:10px; color:var(--text);
-    padding:14px; outline:none; transition:border-color .2s ease;
-  }
+  h1 strong{font-weight:800;} h1 em{font-style:italic;}
+  strong{font-weight:700;} em{font-style:italic;}
+  p.lead{color:var(--text-muted); font-size:1.02rem; max-width:640px; margin-bottom:30px;}
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px;}
+  .toolbar{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:10px;}
+  .group{display:flex; flex-wrap:wrap; gap:6px;}
+  .sep{width:1px; height:26px; background:var(--border); margin:0 4px;}
+  .tb{min-width:38px; height:38px; padding:0 10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep);
+    color:var(--text); font:500 0.95rem 'Inter',sans-serif; cursor:pointer; display:grid; place-items:center;
+    transition:border-color .15s ease, background .15s ease;}
+  .tb:hover{border-color:var(--blue); background:var(--blue-dim);}
+  .tb:focus-visible{outline:2px solid var(--blue-soft); outline-offset:2px;}
+  .tb.wide{padding:0 12px; font-size:0.85rem;}
+  .tb.b{font-weight:800;} .tb.i{font-style:italic; font-family:Georgia,serif;}
+  .tb.u{text-decoration:underline;} .tb.s{text-decoration:line-through;}
+  .tb.m{font-family:'JetBrains Mono',monospace; font-size:0.85rem;}
+  textarea{width:100%; min-height:300px; resize:vertical; font-family:'Inter', sans-serif; font-size:1.05rem; line-height:1.6;
+    background:var(--bg-deep); border:1px solid var(--border); border-radius:10px; color:var(--text); padding:16px; outline:none;
+    transition:border-color .2s ease;}
+  .edwrap{position:relative;}
+  .pasteBig{position:absolute; left:50%; bottom:22px; transform:translateX(-50%); padding:11px 18px; border-radius:9px; cursor:pointer;
+    border:1px solid var(--blue); background:rgba(47,129,254,0.14); color:#fff; font:inherit; font-weight:600; font-size:0.95rem; white-space:nowrap;}
+  .pasteBig:hover{background:var(--blue);}
+  .pasteBig[hidden]{display:none;}
+  .paste-btn{padding:14px 18px; border-radius:8px; border:1px solid var(--blue); background:rgba(47,129,254,0.14); color:#fff; cursor:pointer;
+    font:inherit; font-weight:600; font-size:0.95rem;}
+  .paste-btn:hover{background:var(--blue);}
   textarea:focus{border-color:var(--blue);}
-  .style-row{display:flex; gap:10px; margin:18px 0; flex-wrap:wrap;}
-  .style-btn{
-    font-family:'JetBrains Mono', monospace; font-size:0.8rem; padding:8px 16px; border-radius:7px;
-    border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer;
-    transition:all .2s ease;
-  }
-  .style-btn.active{border-color:var(--blue); color:#fff; background:var(--blue-dim);}
-  .output-box{
-    margin-top:8px; padding:18px; background:var(--bg-deep); border:1px solid var(--border); border-radius:10px;
-    min-height:56px; font-size:1.05rem; word-break:break-word; color:var(--text);
-  }
-  .copy-btn{
-    margin-top:16px; width:100%; padding:14px; border-radius:8px; border:none; cursor:pointer;
-    background:var(--blue); color:#fff; font-weight:500; font-size:1rem; transition:transform .15s ease, box-shadow .2s ease;
-  }
+  .meta{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:10px; font-size:0.85rem; color:var(--text-muted);}
+  .meta .msg{color:var(--cyan); min-height:1.2em;}
+  .hint{margin-top:6px; font-size:0.82rem; color:var(--text-muted);}
+  kbd{display:inline-block; padding:0 6px; border-radius:5px; border:1px solid var(--border); background:var(--bg-deep);
+    font:500 0.85em 'JetBrains Mono',monospace; color:var(--cyan);}
+  .actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+  .copy-btn{flex:1 1 220px; padding:14px; border-radius:8px; border:none; cursor:pointer; background:var(--blue); color:#fff;
+    font-weight:500; font-size:1rem; transition:transform .15s ease, box-shadow .2s ease;}
   .copy-btn:hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(47,129,254,0.3);}
   .copy-btn.copied{background:#22c55e;}
-  .note{
-    margin-top:28px; padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06);
-    border:1px solid rgba(47,129,254,0.18); color:var(--text-muted); font-size:0.9rem;
-  }
+  .ghost{padding:14px 18px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text-muted);
+    cursor:pointer; font:inherit; font-size:0.95rem;}
+  .ghost:hover{border-color:var(--blue); color:#fff;}
+
+  h2{font-family:'Poppins',sans-serif; font-size:1.15rem; margin:34px 0 6px;}
+  .sub{color:var(--text-muted); font-size:0.92rem; margin-bottom:14px;}
+  .cats{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .cat{padding:5px 12px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--text-muted);
+    font:inherit; font-size:0.85rem; cursor:pointer;}
+  .cat.active{border-color:var(--cyan); color:#fff; background:rgba(94,234,212,0.12);}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); gap:8px;}
+  .sym{height:46px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-size:1.2rem;
+    cursor:pointer; overflow:hidden; white-space:nowrap;}
+  .sym:hover{border-color:var(--blue); background:var(--blue-dim);}
+  .sym.wide{grid-column:span 3; font-size:0.9rem;}
+
+  .ext{margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center; padding:26px;
+    border-radius:14px; border:1px solid rgba(94,234,212,0.28); background:linear-gradient(135deg, rgba(94,234,212,0.06), rgba(47,129,254,0.06));}
+  .ext h2{margin-top:0;}
+  .ext ul{margin:12px 0 18px 18px; color:var(--text-muted); font-size:0.95rem;}
+  .ext li{margin:4px 0;}
+  .ext .shot{border-radius:12px; border:1px solid var(--border); overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.4);}
+  .ext .shot img{display:block; width:100%; height:auto;}
+  .ext .btns{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .btn{display:inline-block; padding:12px 18px; border-radius:9px; font-weight:600; font-size:0.95rem; border:1px solid transparent;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{text-decoration:none; box-shadow:0 8px 20px rgba(47,129,254,0.3);}
+  .btn-primary.is-soon{background:var(--surface); border-color:var(--border); color:var(--text-muted); pointer-events:none;}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
+  .example{margin-top:12px; padding:12px 14px; border-radius:10px; background:var(--bg-deep); border:1px solid var(--border); font-size:0.95rem; word-break:break-word;}
+  .example .lbl{font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:4px;}
+  .exrow{display:flex; gap:14px; align-items:baseline; padding:5px 0; border-top:1px solid var(--border);} .exrow:first-of-type{border-top:0;}
+  .exk{flex:0 0 150px; font-size:0.8rem; color:var(--text-muted);}
+  .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .note{margin-top:30px; padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06);
+    border:1px solid rgba(47,129,254,0.18); color:var(--text-muted); font-size:0.92rem;}
   .note strong{color:var(--text);}
-  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
-  @media (max-width:560px){ .wrap{padding:40px 18px 70px;} }
+  footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+  @media (max-width:760px){ .ext{grid-template-columns:1fr; padding:20px;} }
+  @media (max-width:560px){ .exrow{flex-direction:column; gap:2px;} .exk{flex:none;} .wrap{padding:36px 16px 70px;} .panel{padding:12px;} textarea{min-height:240px;} .sep{display:none;} }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="eyebrow">Free tool</div>
-  <h1>Turn your text into <span class="accent">bold Unicode</span> for LinkedIn</h1>
-  <p class="lead">LinkedIn's text box has no bold or italic button. Posts that look bold or italic use special Unicode characters instead. Type below and copy the converted text straight into your post.</p>
+  <h1>Write your LinkedIn post with <span class="accent"><strong>bold</strong>, <em>italic</em></span> and symbols</h1>
+  <p class="lead">LinkedIn's post box has no <strong>bold</strong> or <em>italic</em> button. Write your post here, select a word, click a style, then copy everything into LinkedIn. Nothing you type leaves your browser.</p>
 
   <div class="panel">
-    <label for="input">Your text</label>
-    <textarea id="input" placeholder="Type or paste the text you want to make bold..."></textarea>
-
-    <div class="style-row" id="styleRow">
-      <button class="style-btn active" data-style="bold">Bold</button>
-      <button class="style-btn" data-style="italic">Italic</button>
-      <button class="style-btn" data-style="boldItalic">Bold Italic</button>
+    <div class="toolbar" role="toolbar" aria-label="Text formatting">
+      <div class="group" id="styles">
+        <button class="tb b" data-style="bold" title="Bold (Ctrl+B)" aria-label="Bold">B</button>
+        <button class="tb i" data-style="italic" title="Italic (Ctrl+I)" aria-label="Italic">I</button>
+        <button class="tb wide" data-style="boldItalic" title="Bold italic" aria-label="Bold italic"><b><i>BI</i></b></button>
+        <button class="tb u" data-style="underline" title="Underline (Ctrl+U)" aria-label="Underline">U</button>
+        <button class="tb s" data-style="strike" title="Strikethrough (Ctrl+Shift+X)" aria-label="Strikethrough">S</button>
+        <button class="tb m" data-style="mono" title="Monospace" aria-label="Monospace">M</button>
+        <button class="tb wide" data-style="plain" title="Back to normal text" aria-label="Back to normal text">Aa</button>
+      </div>
+      <span class="sep"></span>
+      <div class="group" id="lists">
+        <button class="tb" data-style="list:•" title="Bullet list" aria-label="Bullet list">•</button>
+        <button class="tb" data-style="list:◦" title="Hollow bullet list" aria-label="Hollow bullet list">◦</button>
+        <button class="tb" data-style="list:▪" title="Square bullet list" aria-label="Square bullet list">▪</button>
+        <button class="tb" data-style="list:➤" title="Arrow list" aria-label="Arrow list">➤</button>
+        <button class="tb" data-style="list:✔" title="Check list" aria-label="Check list">✔</button>
+        <button class="tb" data-style="list:–" title="Dash list" aria-label="Dash list">–</button>
+        <button class="tb wide" data-style="list:1." title="Numbered list" aria-label="Numbered list">1.</button>
+        <button class="tb wide" data-style="list:none" title="Remove list markers" aria-label="Remove list markers">✕</button>
+      </div>
     </div>
 
-    <label>Result</label>
-    <div class="output-box" id="output">Your converted text will appear here</div>
-    <button class="copy-btn" id="copyBtn">Copy to clipboard</button>
+    <div class="edwrap">
+    <textarea id="editor" spellcheck="true" placeholder="Write your post here. Select a word or a few lines, then click Bold, a list style or a symbol."></textarea>
+    <button type="button" class="pasteBig" id="pasteBig">&#128203; Paste your text from clipboard</button>
+    </div>
+
+    <div class="meta">
+      <span class="msg" id="msg" aria-live="polite"></span>
+      <span id="count">0 characters</span>
+    </div>
+    <p class="hint">Shortcuts: <kbd id="mod1">Ctrl</kbd>+<kbd>B</kbd> <strong>bold</strong>, <kbd id="mod2">Ctrl</kbd>+<kbd>I</kbd> <em>italic</em>, <kbd id="mod3">Ctrl</kbd>+<kbd>U</kbd> <u>underline</u>. Click a style again to take it off.</p>
+
+    <div class="actions">
+      <button class="paste-btn" id="pasteBtn" title="Insert the text you copied, at the cursor">&#128203; Paste</button>
+      <button class="copy-btn" id="copyBtn">Copy post to clipboard</button>
+      <button class="ghost" id="clearBtn">Clear</button>
+    </div>
   </div>
 
+  <h2>Symbols</h2>
+  <p class="sub">Click a symbol to put it where your cursor is.</p>
+  <div class="panel">
+    <div class="cats" id="cats"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <section class="ext" id="extension">
+    <div>
+      <h2>Do this right inside LinkedIn</h2>
+      <p class="sub" style="margin-bottom:0">Skip the copy and paste. The free Chrome extension adds these buttons to your LinkedIn post and comment boxes.</p>
+      <ul>
+        <li>Select text in your post, press <kbd>Ctrl</kbd>+<kbd>B</kbd> and it is <strong>bold</strong>. Press again to undo.</li>
+        <li>A small toolbar appears over selected text</li>
+        <li>Lists, bullets and arrows from the right-click menu, with your most recent ones on top</li>
+        <li>Free, no sign-up, collects no data</li>
+      </ul>
+      <div class="btns">
+        <a id="storeBtn" class="btn btn-primary is-soon" href="#" aria-disabled="true">Coming soon to the Chrome Web Store</a>
+        <a class="btn btn-ghost" href="/tools/bold-text-extension/">See how it works</a>
+      </div>
+    </div>
+    <a class="shot" href="/tools/bold-text-extension/" aria-label="About the Chrome extension"><img src="/tools/bold-text-extension/assets/screenshot-1-text-style.png" width="1280" height="800" loading="lazy" alt="The extension side panel with style and list buttons"></a>
+  </section>
+
   <div class="note">
-    <strong>Worth knowing:</strong> these characters are separate Unicode symbols, not real formatting. Screen readers often can't read them properly, and LinkedIn's search doesn't recognise them as normal keywords. Use sparingly, e.g. for a single headline.
+    <strong>Worth knowing:</strong> <strong>bold</strong>, <em>italic</em> and the other styles are separate Unicode characters, not real formatting. Screen readers often can't read them properly, and LinkedIn's search doesn't recognise them as normal keywords. Use them sparingly, for example for a headline or one key phrase. Letters from other alphabets such as Cyrillic have no styled versions and stay as they are.
+    <div class="example">
+      <span class="lbl">Example</span>
+      <div class="exrow"><span class="exk">Normal letters</span><span id="exPlain"></span></div>
+      <div class="exrow"><span class="exk">After clicking Bold</span><span id="exStyled" aria-hidden="true"></span><span class="vh">the same sentence written with bold Unicode characters</span></div>
+    </div>
   </div>
 
   <footer>
-    <span>© <span id="year"></span> YeS Analytics</span>
-    <a href="/">← Back to yes-analytics.com</a>
+    <span>&copy; <span id="year"></span> YeS Analytics</span>
+    <a href="/">&larr; Back to yes-analytics.com</a>
   </footer>
 </div>
 
+<script src="/tools/lib/lbt-converter.js"></script>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
+(function () {
+  const sample = 'Launching our new dashboard';
+  document.getElementById('exPlain').textContent = sample;
+  const styled = LBT.convert(sample, 'bold');
+  document.getElementById('exStyled').textContent = styled;
+})();
 
-const maps = {
-  bold: (() => {
-    const m = {};
-    for (let i = 0; i < 26; i++) {
-      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D400+i);
-      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D41A+i);
-    }
-    for (let i = 0; i < 10; i++) m[String.fromCharCode(48+i)] = String.fromCodePoint(0x1D7CE+i);
-    return m;
-  })(),
-  italic: (() => {
-    const m = {};
-    for (let i = 0; i < 26; i++) {
-      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D434+i);
-      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D44E+i);
-    }
-    // italic h has no dedicated codepoint; fallback handled below
-    m['h'] = '\u210E';
-    return m;
-  })(),
-  boldItalic: (() => {
-    const m = {};
-    for (let i = 0; i < 26; i++) {
-      m[String.fromCharCode(65+i)] = String.fromCodePoint(0x1D468+i);
-      m[String.fromCharCode(97+i)] = String.fromCodePoint(0x1D482+i);
-    }
-    for (let i = 0; i < 10; i++) m[String.fromCharCode(48+i)] = String.fromCodePoint(0x1D7CE+i);
-    return m;
-  })()
-};
+// After the Chrome extension is published, paste its Chrome Web Store link between the quotes.
+// The UTM tags let the store dashboard show how many installs came from this page.
+const STORE_URL = '';
+if (STORE_URL) {
+  const btn = document.getElementById('storeBtn');
+  btn.href = STORE_URL + (STORE_URL.includes('?') ? '&' : '?') + 'utm_source=yes-analytics&utm_medium=website&utm_campaign=web_editor';
+  btn.textContent = 'Add to Chrome, it\u2019s free';
+  btn.classList.remove('is-soon');
+  btn.removeAttribute('aria-disabled');
+  btn.target = '_blank';
+  btn.rel = 'noopener';
+}
 
-let currentStyle = 'bold';
-const input = document.getElementById('input');
-const output = document.getElementById('output');
+const isMac = /Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent || '');
+const modKey = isMac ? '⌘' : 'Ctrl';
+['mod1', 'mod2', 'mod3'].forEach((id) => { document.getElementById(id).textContent = modKey; });
+
+const editor = document.getElementById('editor');
+const msgEl = document.getElementById('msg');
+const countEl = document.getElementById('count');
 const copyBtn = document.getElementById('copyBtn');
-const styleRow = document.getElementById('styleRow');
+const DRAFT_KEY = 'yes-bold-editor-draft';
 
-function convert(text, style) {
-  const map = maps[style];
-  return [...text].map(ch => map[ch] || ch).join('');
+/* ---------- selection that survives clicking a button ---------- */
+let lastSel = { s: 0, e: 0 };
+function rememberSelection() { lastSel = { s: editor.selectionStart, e: editor.selectionEnd }; }
+['select', 'keyup', 'mouseup', 'touchend', 'input', 'blur'].forEach((t) => editor.addEventListener(t, rememberSelection));
+
+function say(text) {
+  msgEl.textContent = text;
+  clearTimeout(say.t);
+  if (text) say.t = setTimeout(() => { msgEl.textContent = ''; }, 2600);
 }
 
-function update() {
-  const result = convert(input.value, currentStyle);
-  output.textContent = result || 'Your converted text will appear here';
+// Replaces a range using the browser's editing command, so Ctrl+Z still undoes it.
+function replaceRange(s, e, out) {
+  editor.focus();
+  editor.setSelectionRange(s, e);
+  let ok = false;
+  try { ok = document.execCommand('insertText', false, out); } catch (err) { ok = false; }
+  if (!ok || editor.value.slice(s, s + out.length) !== out) {
+    editor.setRangeText(out, s, e, 'end');
+    editor.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  editor.setSelectionRange(s, s + out.length);
+  rememberSelection();
 }
 
-input.addEventListener('input', update);
+function applyStyle(style) {
+  const { s, e } = lastSel;
+  const spec = LBT.parseList(style);
+  if (spec) { applyList(spec); return; }
+  if (s === e) { say('Select some text first'); editor.focus(); return; }
+  const text = editor.value.slice(s, e);
+  replaceRange(s, e, LBT.convert(text, LBT.resolve(text, style)));
+}
 
-styleRow.addEventListener('click', (e) => {
-  const btn = e.target.closest('.style-btn');
-  if (!btn) return;
-  styleRow.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentStyle = btn.dataset.style;
-  update();
-});
+function applyList(spec) {
+  const v = editor.value;
+  let { s, e } = lastSel;
+  const start = v.lastIndexOf('\n', s - 1) + 1;
+  if (e > s && v[e - 1] === '\n') e -= 1;
+  let end = v.indexOf('\n', e);
+  if (end === -1) end = v.length;
+  const original = v.slice(start, end);
+  const out = LBT.listLines(original.split('\n'), spec).join('\n');
+  if (out === original) { editor.focus(); return; }
+  replaceRange(start, end, out);
+}
 
-copyBtn.addEventListener('click', () => {
-  const text = output.textContent;
-  if (!text || text === 'Your converted text will appear here') return;
-  navigator.clipboard.writeText(text).then(() => {
-    copyBtn.textContent = 'Copied!';
-    copyBtn.classList.add('copied');
-    setTimeout(() => { copyBtn.textContent = 'Copy to clipboard'; copyBtn.classList.remove('copied'); }, 1500);
+function insertSymbol(sym) {
+  const pos = lastSel.s;
+  replaceRange(pos, pos, sym);
+  editor.setSelectionRange(pos + sym.length, pos + sym.length);
+  rememberSelection();
+}
+
+/* ---------- toolbar, keys ---------- */
+['styles', 'lists'].forEach((id) => {
+  const box = document.getElementById(id);
+  // keep the selection and focus in the editor while a button is pressed
+  box.addEventListener('mousedown', (e) => e.preventDefault());
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) applyStyle(b.dataset.style);
   });
 });
 
-update();
+editor.addEventListener('keydown', (e) => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const k = e.key.toLowerCase();
+  let style = null;
+  if (!e.shiftKey && k === 'b') style = 'bold';
+  else if (!e.shiftKey && k === 'i') style = 'italic';
+  else if (!e.shiftKey && k === 'u') style = 'underline';
+  else if (e.shiftKey && k === 'x') style = 'strike';
+  if (!style) return;
+  e.preventDefault();
+  rememberSelection();
+  applyStyle(style);
+});
+
+/* ---------- symbols ---------- */
+const SYMBOLS = [
+  { id: 'bullets', title: 'Bullets', items: ['•','◦','▪','▫','●','○','■','□','◆','◇','▸','▶','➤','➔'] },
+  { id: 'checks', title: 'Checks and marks', items: ['✔','✓','✅','☑','✘','✗','❌','⚠','★','☆','✦','✧','❖','※'] },
+  { id: 'arrows', title: 'Arrows', items: ['→','←','↑','↓','↔','⇒','⇨','↳','↪','➜','⟶','➡'] },
+  { id: 'numbers', title: 'Numbers', items: ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','❶','❷','❸','❹'] },
+  { id: 'dividers', title: 'Dividers', items: ['───────────','━━━━━━━━━━━','═══════════','• • •','· · ·','⸻','▬▬▬▬▬▬'] },
+  { id: 'emoji', title: 'Popular emoji', items: ['🚀','💡','🔥','📈','📊','🎯','👉','✨','🙌','👏','💬','🔑'] }
+];
+let cat = SYMBOLS[0].id;
+const catsEl = document.getElementById('cats');
+const gridEl = document.getElementById('grid');
+
+function renderSymbols() {
+  catsEl.textContent = '';
+  SYMBOLS.forEach((c) => {
+    const b = document.createElement('button');
+    b.className = 'cat' + (c.id === cat ? ' active' : '');
+    b.textContent = c.title;
+    b.dataset.cat = c.id;
+    catsEl.appendChild(b);
+  });
+  gridEl.textContent = '';
+  SYMBOLS.find((c) => c.id === cat).items.forEach((sym) => {
+    const b = document.createElement('button');
+    b.className = 'sym' + (sym.length > 4 && !/\p{Extended_Pictographic}/u.test(sym) ? ' wide' : '');
+    b.textContent = sym;
+    b.title = 'Insert ' + sym;
+    b.dataset.sym = sym;
+    gridEl.appendChild(b);
+  });
+}
+catsEl.addEventListener('click', (e) => {
+  const b = e.target.closest('.cat');
+  if (b) { cat = b.dataset.cat; renderSymbols(); }
+});
+gridEl.addEventListener('mousedown', (e) => e.preventDefault());
+gridEl.addEventListener('click', (e) => {
+  const b = e.target.closest('.sym');
+  if (b) insertSymbol(b.dataset.sym);
+});
+renderSymbols();
+
+/* ---------- count, draft, copy, clear ---------- */
+function updateCount() {
+  const n = Array.from(editor.value).length;
+  countEl.textContent = n.toLocaleString('en') + ' characters';
+  document.getElementById('pasteBig').hidden = editor.value.length > 0;
+}
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, editor.value); } catch (e) { /* private mode */ }
+}
+editor.addEventListener('input', () => { updateCount(); saveDraft(); });
+try { editor.value = localStorage.getItem(DRAFT_KEY) || ''; } catch (e) { /* ignore */ }
+updateCount();
+
+copyBtn.addEventListener('click', async () => {
+  if (!editor.value) { say('Write something first'); return; }
+  try {
+    await navigator.clipboard.writeText(editor.value);
+  } catch (err) {
+    editor.select();
+    try { document.execCommand('copy'); } catch (e2) { say('Select the text and copy it manually'); return; }
+  }
+  copyBtn.textContent = 'Copied!';
+  copyBtn.classList.add('copied');
+  setTimeout(() => { copyBtn.textContent = 'Copy post to clipboard'; copyBtn.classList.remove('copied'); }, 1500);
+});
+
+async function doPaste() {
+  let text = '';
+  try {
+    text = await navigator.clipboard.readText();
+  } catch (err) {
+    // The browser blocked clipboard reading, so let the person paste the usual way.
+    editor.focus();
+    say('Your browser asks you to paste yourself: press ' + (/Mac|iPhone|iPad/.test(navigator.platform) ? 'Cmd' : 'Ctrl') + '+V');
+    return;
+  }
+  if (!text) { say('The clipboard is empty'); return; }
+  const at = editor.value ? lastSel : { s: 0, e: 0 };
+  replaceRange(at.s, at.e, text);
+  const end = at.s + text.length;
+  editor.setSelectionRange(end, end);
+  rememberSelection();
+  updateCount();
+  saveDraft();
+  say('Pasted');
+}
+document.getElementById('pasteBtn').addEventListener('click', doPaste);
+document.getElementById('pasteBig').addEventListener('click', doPaste);;
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (editor.value && !confirm('Clear the whole post?')) return;
+  editor.value = '';
+  updateCount();
+  saveDraft();
+  editor.focus();
+});
 </script>
 </body>
 </html>

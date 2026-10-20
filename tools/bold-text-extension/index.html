@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bold and Symbols for Posts: free Chrome extension | YeS Analytics</title>
+<meta name="description" content="Free Chrome extension that adds bold, italic and symbols to your LinkedIn posts. No sign-up, no data collected.">
+<link rel="canonical" href="https://yes-analytics.com/tools/bold-text-extension/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bold and Symbols for Posts: free Chrome extension">
+<meta property="og:description" content="Add bold, italic, bullets, arrows and other symbols to your LinkedIn posts. Free, no sign-up, no data collected.">
+<meta property="og:url" content="https://yes-analytics.com/tools/bold-text-extension/">
+<meta property="og:image" content="https://yes-analytics.com/tools/bold-text-extension/assets/screenshot-1-text-style.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#050b18; --bg-deep:#020714; --bg-end:#0a1936; --surface:#0e1930; --border:#1c2c4a;
+    --text:#edf1f8; --text-muted:#8b96ac; --blue:#2f81fe; --blue-soft:#5ea1ff; --blue-dim:rgba(47,129,254,0.14);
+    --cyan:#5eead4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.65;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+    background:radial-gradient(ellipse 80% 55% at 70% 0%, var(--bg-end) 0%, var(--bg-deep) 62%);
+  }
+  a{color:var(--blue-soft); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  /* top bar */
+  .top{display:flex; align-items:center; justify-content:space-between; padding:22px 0;}
+  .top a.brand{color:var(--text); font-family:'Poppins',sans-serif; font-weight:700; font-size:1.05rem;}
+  .top a.back{font-size:0.9rem; color:var(--text-muted);}
+
+  /* hero */
+  .hero{padding:36px 0 28px; display:grid; grid-template-columns:1.05fr 1fr; gap:40px; align-items:center;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--cyan); display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--cyan);}
+  h1{font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.15; margin-bottom:16px;}
+  h1 .accent{color:var(--blue-soft);}
+  .lead{color:var(--text-muted); font-size:1.08rem; max-width:520px; margin-bottom:26px;}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; align-items:center;}
+  .btn{display:inline-block; padding:14px 22px; border-radius:10px; font-weight:600; font-size:1rem; border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s ease;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(47,129,254,0.32); text-decoration:none;}
+  .btn-primary.is-soon{background:var(--surface); border-color:var(--border); color:var(--text-muted); cursor:default; pointer-events:none;}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
+  .assure{margin-top:16px; font-size:0.86rem; color:var(--text-muted);}
+  .shot{border-radius:16px; border:1px solid var(--border); overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.45);}
+  .shot img{display:block; width:100%; height:auto;}
+
+  /* sections */
+  section{padding:46px 0 6px;}
+  h2{font-family:'Poppins',sans-serif; font-weight:700; font-size:1.55rem; line-height:1.25; margin-bottom:8px;}
+  .sub{color:var(--text-muted); margin-bottom:26px; max-width:620px;}
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px;}
+  .card h3{font-family:'Poppins',sans-serif; font-size:1.02rem; margin-bottom:6px;}
+  .card p{color:var(--text-muted); font-size:0.94rem;}
+  .shots{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:6px;}
+  .steps{counter-reset:s; display:grid; gap:12px; list-style:none;}
+  .steps li{counter-increment:s; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px 16px 58px; position:relative; color:#c9d2e3;}
+  .steps li::before{content:counter(s); position:absolute; left:16px; top:14px; width:28px; height:28px; border-radius:50%;
+    background:var(--blue-dim); border:1px solid var(--blue); color:#fff; display:grid; place-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem;}
+  kbd{display:inline-block; padding:0 7px; border-radius:6px; border:1px solid var(--border); background:#091226;
+    font:500 0.88em 'JetBrains Mono',monospace; color:var(--cyan);}
+  code{font-family:'JetBrains Mono',monospace; font-size:0.88em; color:var(--cyan);}
+  .note{padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06); border:1px solid rgba(47,129,254,0.2);
+    color:var(--text-muted); font-size:0.94rem;}
+  .note strong{color:var(--text);}
+  details{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px;}
+  summary{cursor:pointer; font-weight:600; list-style:none;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'+'; float:right; color:var(--blue-soft);}
+  details[open] summary::after{content:'\2212';}
+  details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
+  footer{margin-top:60px; padding:24px 0 48px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; gap:28px; padding-top:20px;}
+    .cards{grid-template-columns:1fr;}
+    .shots{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){ .wrap{padding:0 16px;} .btn{width:100%; text-align:center;} .cta-row{flex-direction:column; align-items:stretch;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/">YeS Analytics</a>
+    <a class="back" href="/">&larr; Back to the site</a>
+  </div>
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Free Chrome extension</div>
+      <h1>Bold, italic and symbols for your <span class="accent">LinkedIn posts</span></h1>
+      <p class="lead">LinkedIn's post editor has no bold or italic button. This extension adds them for posts and comments, plus underline, strikethrough, bullets, arrows and other symbols. Select text, press a shortcut, done.</p>
+      <div class="cta-row">
+        <a id="storeBtn" class="btn btn-primary is-soon" href="#" aria-disabled="true">Coming soon to the Chrome Web Store</a>
+        <a class="btn btn-ghost" href="/tools/bold-text.html">Try the web converter</a>
+      </div>
+      <p class="assure">Free. No sign-up. No data collected.</p>
+    </div>
+    <div class="shot">
+      <img src="assets/screenshot-1-text-style.png" width="1280" height="800" alt="The extension side panel with style and list buttons">
+    </div>
+  </header>
+
+  <section id="features">
+    <h2>What it does</h2>
+    <p class="sub">Three small things that make LinkedIn posts easier to write and easier to scan.</p>
+    <div class="cards">
+      <div class="card"><h3>Bold and italic</h3><p>Select text in a post or comment and make it bold, italic, underlined, struck through or monospace. Press the same style again to take it off. Turn selected lines into bulleted or numbered lists.</p></div>
+      <div class="card"><h3>Symbols in one click</h3><p>Bullets, arrows, check marks, numbers, dividers and popular emoji. A Recent item in the right-click menu repeats whatever you used last, so repeat jobs take one click.</p></div>
+      <div class="card"><h3>Side panel, toolbar and shortcuts</h3><p>Click the extension icon to open a side panel that stays beside your post. A small toolbar also appears over selected text. Or use the keys you already know: <kbd>Ctrl</kbd> <kbd>B</kbd> bold, <kbd>Ctrl</kbd> <kbd>I</kbd> italic, <kbd>Ctrl</kbd> <kbd>U</kbd> underline. Press again to undo. Extra shortcuts can be changed to anything you like.</p></div>
+    </div>
+    <div class="shots" style="margin-top:16px">
+      <div class="shot"><img src="assets/screenshot-2-symbols.png" width="1280" height="800" loading="lazy" alt="The Symbols tab with a grid of bullets and other symbols"></div>
+      <div class="shot"><img src="assets/screenshot-3-shortcuts.png" width="1280" height="800" loading="lazy" alt="The welcome page showing the keyboard shortcuts"></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>How to install and use it</h2>
+    <p class="sub">It takes about a minute.</p>
+    <ol class="steps">
+      <li>Open the extension page in the Chrome Web Store and click <b>Add to Chrome</b>.</li>
+      <li>Pin it so the icon is always visible. Click the puzzle icon in Chrome's toolbar, then the pin next to <b>Bold and Symbols for Posts</b>.</li>
+      <li>Open LinkedIn and write your post. Select some text and press <kbd>Ctrl</kbd> <kbd>B</kbd> for bold or <kbd>Ctrl</kbd> <kbd>I</kbd> for italic (<kbd>Cmd</kbd> on a Mac). Press the same keys again to undo. Or right-click the selection and choose <b>LinkedIn text style</b>.</li>
+      <li>For a bullet, arrow or check mark, right-click in the post and choose <b>Insert symbol</b>, or click the extension icon and open the <b>Symbols</b> tab.</li>
+    </ol>
+    <p class="sub" style="margin-top:16px">Want extra shortcuts of your own? The extension also has <kbd>Alt</kbd> <kbd>B</kbd> and <kbd>Alt</kbd> <kbd>I</kbd> that you can change. Open <code>chrome://extensions/shortcuts</code> in Chrome's address bar and pick your own.</p>
+  </section>
+
+  <section id="good-to-know">
+    <div class="note"><strong>Good to know.</strong> Styled text is made of special Unicode characters, not real formatting. Screen readers may read it badly and LinkedIn search may not match it as normal words. Use it sparingly, for example for a headline or a key phrase.</div>
+  </section>
+
+  <section id="faq">
+    <h2>Questions</h2>
+    <details><summary>Is it really free?</summary><p>Yes. There is no sign-up, no ads and no paid tier.</p></details>
+    <details><summary>Does it collect my data?</summary><p>No. It runs only on linkedin.com, works entirely inside your browser and sends nothing anywhere. Read the <a href="privacy.html">privacy policy</a>.</p></details>
+    <details><summary>Where does it work?</summary><p>On LinkedIn, in desktop Chrome. Browser extensions are not available in Chrome on phones, so on mobile use the <a href="/tools/bold-text.html">web converter</a>, copy the result and paste it into your post.</p></details>
+    <details><summary>Why does some text show as empty boxes?</summary><p>The styled letters are regular Unicode characters. A few fonts or older devices do not include them, so a reader may see boxes instead of letters. This is rare on modern devices.</p></details>
+    <details><summary>Who makes it?</summary><p>YeS Analytics, a small data analytics studio. Questions or ideas: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>.</p></details>
+  </section>
+
+  <footer>
+    <span>&copy; <span id="year"></span> YeS Analytics</span>
+    <span><a href="privacy.html">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="/tools/bold-text.html">Web converter</a></span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // After the extension is published, paste its Chrome Web Store link between the quotes.
+  // The UTM tags let the store dashboard show how many installs came from this page.
+  const STORE_URL = '';
+
+  if (STORE_URL) {
+    const btn = document.getElementById('storeBtn');
+    const url = STORE_URL + (STORE_URL.includes('?') ? '&' : '?') +
+      'utm_source=yes-analytics&utm_medium=website&utm_campaign=extension_page';
+    btn.href = url;
+    btn.textContent = 'Add to Chrome, it’s free';
+    btn.classList.remove('is-soon');
+    btn.removeAttribute('aria-disabled');
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+  }
+</script>
+</body>
+</html>
