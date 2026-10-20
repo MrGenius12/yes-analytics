@@ -34,7 +34,7 @@
   <p>The extension does not collect, store, sell or send any personal data. Everything happens locally in your browser.</p>
 
   <h2>What the extension does with your text</h2>
-  <p>When you select text in a LinkedIn post or comment and choose a style, the extension reads that selected text inside the page, converts it to styled Unicode characters, and puts the result back in the same place. When you insert a symbol, it adds the symbol where your cursor is. The text is never transmitted anywhere and is not saved.</p>
+  <p>When you select text in a post or comment on a web page and choose a style, the extension reads that selected text inside the page you are using, converts it to styled Unicode characters, and puts the result back in the same place. When you insert a symbol, it adds the symbol where your cursor is. The text is never transmitted anywhere and is not saved.</p>
 
   <h2>What the extension remembers on your device</h2>
   <p>To save you time, the extension keeps a few small things in your browser's local extension storage: the last symbols, styles and lists you used (for the Recent menu), whether the small toolbar is switched on, and the text you typed in the converter, so it is still there if you close the window by accident. This stays on your device. It is never sent anywhere, and removing the extension deletes it.</p>
@@ -49,11 +49,12 @@
 
   <h2>Why the extension needs its permissions</h2>
   <ul>
-    <li><b>Access to linkedin.com:</b> so it can replace the selected text in the post and comment editors. The extension runs only on LinkedIn and has no access to any other website.</li>
+    <li><b>Access to LinkedIn and X (linkedin.com, x.com, twitter.com):</b> so it can replace the selected text in post and comment editors there as soon as the page opens.</li>
+    <li><b>Optional access to all websites:</b> off by default. If you switch on &ldquo;Ready on every website&rdquo; in the side panel, your browser asks for permission and the extension can then work on any site without a click first. You can switch it off at any time, and the permission is removed. Even then the extension only reads the text you select, only when you use it, and sends nothing anywhere.</li>
     <li><b>Context menus:</b> to add the right-click items for text style and symbols.</li>
     <li><b>Storage:</b> to remember the items listed above on your device.</li>
     <li><b>Side panel:</b> to show the same controls in a panel that stays open next to the page.</li>
-    <li><b>Active tab and scripting:</b> to connect to a LinkedIn tab that was already open when the extension was installed or updated, so you do not need to reload the page.</li>
+    <li><b>Active tab and scripting:</b> when you press a shortcut, use the right-click menu or the side panel on a site that is not listed above, your browser lets the extension work on that one tab for the moment, and the extension adds its small script to it. It also connects to LinkedIn and X tabs that were already open when the extension was installed or updated, so you do not need to reload them.</li>
   </ul>
 
   <h2>Third parties</h2>
