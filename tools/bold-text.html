@@ -88,6 +88,11 @@
   .sym:hover{border-color:var(--blue); background:var(--blue-dim);}
   .sym.wide{grid-column:span 3; font-size:0.9rem;}
 
+  .extbar{display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; margin:0 0 18px; padding:12px 16px; border-radius:12px;
+    border:1px solid rgba(94,234,212,0.35); background:linear-gradient(135deg, rgba(94,234,212,0.08), rgba(47,129,254,0.08));}
+  .extbar span{flex:1 1 260px; font-size:0.95rem;}
+  .extbar a.go{flex:0 0 auto; padding:9px 16px; border-radius:8px; background:var(--blue); color:#fff; font-weight:600; font-size:0.9rem; white-space:nowrap;}
+  .extbar a.go:hover{text-decoration:none; box-shadow:0 8px 20px rgba(47,129,254,0.3);}
   .ext{margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center; padding:26px;
     border-radius:14px; border:1px solid rgba(94,234,212,0.28); background:linear-gradient(135deg, rgba(94,234,212,0.06), rgba(47,129,254,0.06));}
   .ext h2{margin-top:0;}
@@ -218,6 +223,8 @@
   <h1>Write your LinkedIn post with <span class="accent"><strong>bold</strong>, <em>italic</em></span> and symbols</h1>
   <p class="lead">LinkedIn's post box has no <strong>bold</strong> or <em>italic</em> button. Write your post here, select a word, click a style, then copy everything into LinkedIn. Nothing you type leaves your browser.</p>
 
+  <div class="extbar"><span>Want these buttons right inside LinkedIn, X and other sites? Try the <strong>free Chrome extension</strong>.</span><a class="go" id="extBarLink" href="/tools/bold-text-extension/">Get the extension</a></div>
+
   <div class="panel">
     <div class="toolbar" role="toolbar" aria-label="Text formatting">
       <div class="group" id="styles">
@@ -320,6 +327,8 @@ if (STORE_URL) {
   btn.classList.remove('is-soon');
   btn.removeAttribute('aria-disabled');
   btn.target = '_blank';
+  const bar = document.getElementById('extBarLink');
+  bar.href = btn.href; bar.target = '_blank'; bar.rel = 'noopener'; bar.textContent = 'Add to Chrome';
   btn.rel = 'noopener';
 }
 
