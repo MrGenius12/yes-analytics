@@ -23,9 +23,105 @@
   a{color:var(--blue-soft); text-decoration:none;}
   a:hover{text-decoration:underline;}
   footer{margin-top:50px; padding-top:22px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--muted);}
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(5,11,24,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(28,44,74,0.6);
+  }
+  .site-nav nav{
+    max-width:1160px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo-mark{display:flex; align-items:center;}
+  .logo-mark img{display:block; width:auto;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:0.9rem; color:var(--text-muted); transition:color .2s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    padding:9px 18px; border:1px solid var(--blue); border-radius:6px;
+    font-size:0.85rem; color:var(--blue-soft) !important; transition:all .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{background:var(--blue-dim); color:#fff !important;}
+
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
+
+  /* ---------- NAV DROPDOWN ---------- */
+  .nav-dropdown{position:relative;}
+  .nav-dropdown-toggle{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    font-size:0.9rem; color:var(--text-muted); font-family:'Inter', sans-serif; padding:0;
+    transition:color .2s ease;
+  }
+  .nav-dropdown-toggle:hover, .nav-dropdown-toggle:focus-visible, .nav-dropdown.open .nav-dropdown-toggle{color:var(--text);}
+  .nav-dropdown-toggle svg{width:12px; height:12px; stroke:currentColor; transition:transform .2s ease;}
+  .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg);}
+  .nav-dropdown-menu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-8px);
+    min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:8px; margin-top:14px; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:60;
+  }
+  .nav-dropdown-menu::before{
+    content:''; position:absolute; left:0; right:0; top:-14px; height:14px; background:transparent;
+    pointer-events:auto;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu{
+    opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:8px;
+    color:var(--text); font-size:0.88rem; transition:background .15s ease;
+  }
+  .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
+  .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  @media (max-width:860px){
+    .nav-dropdown-menu{
+      position:static; transform:none; box-shadow:none; border:none; background:transparent;
+      padding:4px 0 4px 14px; display:none; opacity:1; min-width:0;
+    }
+    .nav-dropdown.open .nav-dropdown-menu{display:flex; flex-direction:column;}
+    .nav-dropdown-toggle{width:100%; justify-content:space-between; padding:2px 0;}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none; position:fixed; top:64px; left:0; right:0; background:var(--bg-deep); flex-direction:column; align-items:flex-start; padding:24px 32px; border-bottom:1px solid var(--border); gap:20px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  .site-nav a:hover{text-decoration:none;}
+  .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
+  body{padding-top:68px;}
 </style>
 </head>
 <body>
+<header class="site-nav">
+  <nav>
+    <a href="/" class="logo-mark"><img src="/tools/lib/yes-logo.png" alt="YeS Analytics" height="40"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#directions">Directions</a>
+      <a href="/#work">Work</a>
+      <a href="/#about">About</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsDropdownToggle" aria-expanded="false">
+          Free tools
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="/tools/bold-text.html">
+            Bold text generator
+            <span class="tool-desc">Convert text to bold Unicode for LinkedIn</span>
+          </a>
+        </div>
+      </div>
+      <a href="/#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
 <div class="wrap">
   <h1>Privacy Policy</h1>
   <p class="meta">Bold and Symbols for Posts, a browser extension by <a href="https://yes-analytics.com/">YeS Analytics</a>. Last updated: 21 October 2026.</p>
@@ -70,5 +166,25 @@
     <a href="/">Back to yes-analytics.com</a>
   </footer>
 </div>
+<script>
+// Menu: mobile toggle and Free tools dropdown, same behaviour as the main page.
+(function () {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  const dd = document.getElementById('toolsDropdown');
+  const ddt = document.getElementById('toolsDropdownToggle');
+  ddt.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddt.setAttribute('aria-expanded', dd.classList.toggle('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+</script>
 </body>
 </html>
