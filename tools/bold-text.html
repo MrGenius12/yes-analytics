@@ -323,7 +323,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 // After the Chrome extension is published, paste its Chrome Web Store link between the quotes.
 // The UTM tags let the store dashboard show how many installs came from this page.
-const STORE_URL = '';
+const STORE_URL = 'https://chrome.google.com/webstore/detail/flligilkbigfegpcljgbeelcciilkeag';
 if (STORE_URL) {
   const btn = document.getElementById('storeBtn');
   btn.href = STORE_URL + (STORE_URL.includes('?') ? '&' : '?') + 'utm_source=yes-analytics&utm_medium=website&utm_campaign=web_editor';
