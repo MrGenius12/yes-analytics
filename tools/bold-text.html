@@ -112,6 +112,12 @@
   .exrow{display:flex; gap:14px; align-items:baseline; padding:5px 0; border-top:1px solid var(--border);} .exrow:first-of-type{border-top:0;}
   .exk{flex:0 0 150px; font-size:0.8rem; color:var(--text-muted);}
   .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .feedback{margin-top:40px; padding:22px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface);
+    display:flex; align-items:center; justify-content:space-between; gap:16px 24px; flex-wrap:wrap;}
+  .feedback h2{margin:0 0 4px; font-size:1.1rem;}
+  .feedback p{margin:0; color:var(--text-muted); font-size:0.92rem; max-width:520px;}
+  .feedback a.fb{flex:0 0 auto; padding:11px 18px; border-radius:9px; border:1px solid var(--blue); color:var(--blue-soft); font-weight:600; font-size:0.92rem;}
+  .feedback a.fb:hover{background:var(--blue-dim); color:#fff; text-decoration:none;}
   .note{margin-top:30px; padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06);
     border:1px solid rgba(47,129,254,0.18); color:var(--text-muted); font-size:0.92rem;}
   .note strong{color:var(--text);}
@@ -304,6 +310,14 @@
       <div class="exrow"><span class="exk">After clicking Bold</span><span id="exStyled" aria-hidden="true"></span><span class="vh">the same sentence written with bold Unicode characters</span></div>
     </div>
   </div>
+
+  <section class="feedback" id="feedback">
+    <div>
+      <h2>Help improve this tool</h2>
+      <p>Found a bug or have an idea for a style, symbol or feature? Tell us. Every message is read.</p>
+    </div>
+    <a class="fb" href="mailto:info@yes-analytics.com?subject=Feedback%3A%20Bold%20text%20editor">Send feedback</a>
+  </section>
 
   <footer>
     <span>&copy; <span id="year"></span> YeS Analytics</span>
