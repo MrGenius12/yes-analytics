@@ -164,6 +164,23 @@
     .nav-links.open{display:flex;}
     .nav-toggle{display:block;}
   }
+  .feedback{margin-top:40px; padding:26px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface); text-align:center;}
+  .feedback h2{margin:0 0 6px; font-size:1.15rem;}
+  .feedback > p{margin:0 auto 16px; color:var(--text-muted); font-size:0.92rem; max-width:560px;}
+  .feedback form{max-width:640px; margin:0 auto; text-align:left;}
+  .feedback textarea{width:100%; min-height:96px; resize:vertical; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback textarea:focus, .feedback input[type=email]:focus{border-color:var(--blue);}
+  .feedback .fbrow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .feedback input[type=email]{flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback button{flex:0 0 auto; padding:12px 22px; border-radius:10px; border:none; background:var(--blue); color:#fff; cursor:pointer; font:inherit; font-weight:600; font-size:0.95rem;}
+  .feedback button:disabled{opacity:.6; cursor:default;}
+  .feedback .fbmsg{margin-top:10px; min-height:1.3em; font-size:0.9rem; color:var(--cyan); text-align:center;}
+  .feedback .fbmsg.err{color:#f59e8b;}
+  .feedback .fbnote{margin-top:6px; font-size:0.78rem; color:var(--text-muted); text-align:center;}
+  .feedback .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
   .site-nav a:hover{text-decoration:none;}
   .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
   body{padding-top:68px;}
@@ -254,6 +271,23 @@
     <details><summary>Who makes it?</summary><p><a href="https://yes-analytics.com/">YeS Analytics</a>. Questions or ideas: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>.</p></details>
   </section>
 
+  <section class="feedback" id="feedback">
+    <h2>Help improve this tool</h2>
+    <p>Found a bug or have an idea for the extension? A site where it does not work, a style or a symbol you miss? Tell us. Every message is read.</p>
+    <form id="feedbackForm" novalidate>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="vh" for="fbText">Your suggestion or feedback</label>
+      <textarea id="fbText" name="message" maxlength="3000" placeholder="Your suggestion or feedback..." required></textarea>
+      <div class="fbrow">
+        <label class="vh" for="fbEmail">Your email (optional)</label>
+        <input id="fbEmail" type="email" name="email" maxlength="200" placeholder="Your email (optional)" autocomplete="email">
+        <button type="submit" id="fbSend">Send feedback</button>
+      </div>
+      <p class="fbmsg" id="fbMsg" role="status" aria-live="polite"></p>
+      <p class="fbnote">Only your message and email (if you add one) are sent to us, by email. Nothing else on this page is sent.</p>
+    </form>
+  </section>
+
   <footer>
     <span>&copy; <span id="year"></span> YeS Analytics</span>
     <span><a href="privacy.html">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="/tools/bold-text.html">Web converter</a></span>
@@ -298,6 +332,43 @@
   });
   document.addEventListener('click', (e) => {
     if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+
+// Feedback form. Paste your Web3Forms access key between the quotes (free key from web3forms.com,
+// it is not a secret). While it is empty, the button opens an email instead.
+(function () {
+  const FEEDBACK_KEY = '';
+  const SUBJECT = 'Feedback: Chrome extension';
+  const form = document.getElementById('feedbackForm');
+  const msg = document.getElementById('fbMsg');
+  const btn = document.getElementById('fbSend');
+  function say(t, err) { msg.textContent = t; msg.className = 'fbmsg' + (err ? ' err' : ''); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('fbText').value.trim();
+    const email = document.getElementById('fbEmail').value.trim();
+    if (!text) { say('Please write a short message first.', true); return; }
+    if (form.elements.botcheck.checked) return;
+    if (!FEEDBACK_KEY) {
+      const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
+      window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
+      return;
+    }
+    btn.disabled = true; say('Sending...');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ access_key: FEEDBACK_KEY, subject: SUBJECT, from_name: 'YeS Analytics website', message: text, email: email || undefined })
+      });
+      const data = await res.json();
+      if (data && data.success) { form.reset(); say('Thank you, your message was sent.'); }
+      else say('Could not send. Please email info@yes-analytics.com instead.', true);
+    } catch (err) {
+      say('Could not send. Please email info@yes-analytics.com instead.', true);
+    }
+    btn.disabled = false;
   });
 })();
 </script>

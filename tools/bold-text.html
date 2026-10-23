@@ -112,12 +112,22 @@
   .exrow{display:flex; gap:14px; align-items:baseline; padding:5px 0; border-top:1px solid var(--border);} .exrow:first-of-type{border-top:0;}
   .exk{flex:0 0 150px; font-size:0.8rem; color:var(--text-muted);}
   .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
-  .feedback{margin-top:40px; padding:22px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface);
-    display:flex; align-items:center; justify-content:space-between; gap:16px 24px; flex-wrap:wrap;}
-  .feedback h2{margin:0 0 4px; font-size:1.1rem;}
-  .feedback p{margin:0; color:var(--text-muted); font-size:0.92rem; max-width:520px;}
-  .feedback a.fb{flex:0 0 auto; padding:11px 18px; border-radius:9px; border:1px solid var(--blue); color:var(--blue-soft); font-weight:600; font-size:0.92rem;}
-  .feedback a.fb:hover{background:var(--blue-dim); color:#fff; text-decoration:none;}
+  .feedback{margin-top:40px; padding:26px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface); text-align:center;}
+  .feedback h2{margin:0 0 6px; font-size:1.15rem;}
+  .feedback > p{margin:0 auto 16px; color:var(--text-muted); font-size:0.92rem; max-width:560px;}
+  .feedback form{max-width:640px; margin:0 auto; text-align:left;}
+  .feedback textarea{width:100%; min-height:96px; resize:vertical; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback textarea:focus, .feedback input[type=email]:focus{border-color:var(--blue);}
+  .feedback .fbrow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .feedback input[type=email]{flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback button{flex:0 0 auto; padding:12px 22px; border-radius:10px; border:none; background:var(--blue); color:#fff; cursor:pointer; font:inherit; font-weight:600; font-size:0.95rem;}
+  .feedback button:disabled{opacity:.6; cursor:default;}
+  .feedback .fbmsg{margin-top:10px; min-height:1.3em; font-size:0.9rem; color:var(--cyan); text-align:center;}
+  .feedback .fbmsg.err{color:#f59e8b;}
+  .feedback .fbnote{margin-top:6px; font-size:0.78rem; color:var(--text-muted); text-align:center;}
+  .feedback .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
   .note{margin-top:30px; padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06);
     border:1px solid rgba(47,129,254,0.18); color:var(--text-muted); font-size:0.92rem;}
   .note strong{color:var(--text);}
@@ -312,11 +322,20 @@
   </div>
 
   <section class="feedback" id="feedback">
-    <div>
-      <h2>Help improve this tool</h2>
-      <p>Found a bug or have an idea for a style, symbol or feature? Tell us. Every message is read.</p>
-    </div>
-    <a class="fb" href="mailto:info@yes-analytics.com?subject=Feedback%3A%20Bold%20text%20editor">Send feedback</a>
+    <h2>Help improve this tool</h2>
+    <p>Found a bug or have an idea for a style, symbol or feature? Tell us. Every message is read.</p>
+    <form id="feedbackForm" novalidate>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="vh" for="fbText">Your suggestion or feedback</label>
+      <textarea id="fbText" name="message" maxlength="3000" placeholder="Your suggestion or feedback..." required></textarea>
+      <div class="fbrow">
+        <label class="vh" for="fbEmail">Your email (optional)</label>
+        <input id="fbEmail" type="email" name="email" maxlength="200" placeholder="Your email (optional)" autocomplete="email">
+        <button type="submit" id="fbSend">Send feedback</button>
+      </div>
+      <p class="fbmsg" id="fbMsg" role="status" aria-live="polite"></p>
+      <p class="fbnote">Only your message and email (if you add one) are sent to us, by email. Nothing else on this page is sent.</p>
+    </form>
   </section>
 
   <footer>
@@ -555,6 +574,43 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   });
   document.addEventListener('click', (e) => {
     if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+
+// Feedback form. Paste your Web3Forms access key between the quotes (free key from web3forms.com,
+// it is not a secret). While it is empty, the button opens an email instead.
+(function () {
+  const FEEDBACK_KEY = '';
+  const SUBJECT = 'Feedback: Bold text editor';
+  const form = document.getElementById('feedbackForm');
+  const msg = document.getElementById('fbMsg');
+  const btn = document.getElementById('fbSend');
+  function say(t, err) { msg.textContent = t; msg.className = 'fbmsg' + (err ? ' err' : ''); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('fbText').value.trim();
+    const email = document.getElementById('fbEmail').value.trim();
+    if (!text) { say('Please write a short message first.', true); return; }
+    if (form.elements.botcheck.checked) return;
+    if (!FEEDBACK_KEY) {
+      const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
+      window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
+      return;
+    }
+    btn.disabled = true; say('Sending...');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ access_key: FEEDBACK_KEY, subject: SUBJECT, from_name: 'YeS Analytics website', message: text, email: email || undefined })
+      });
+      const data = await res.json();
+      if (data && data.success) { form.reset(); say('Thank you, your message was sent.'); }
+      else say('Could not send. Please email info@yes-analytics.com instead.', true);
+    } catch (err) {
+      say('Could not send. Please email info@yes-analytics.com instead.', true);
+    }
+    btn.disabled = false;
   });
 })();
 </script>
