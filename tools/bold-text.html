@@ -577,10 +577,11 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   });
 })();
 
-// Feedback form. Paste your Web3Forms access key between the quotes (free key from web3forms.com,
-// it is not a secret). While it is empty, the button opens an email instead.
+// Feedback form, sent through Formspree. Paste the form address between the quotes
+// (looks like https://formspree.io/f/abcdwxyz, it is not a secret). While it is empty,
+// the button opens an email instead.
 (function () {
-  const FEEDBACK_KEY = '';
+  const FEEDBACK_URL = '';
   const SUBJECT = 'Feedback: Bold text editor';
   const form = document.getElementById('feedbackForm');
   const msg = document.getElementById('fbMsg');
@@ -592,20 +593,19 @@ document.getElementById('clearBtn').addEventListener('click', () => {
     const email = document.getElementById('fbEmail').value.trim();
     if (!text) { say('Please write a short message first.', true); return; }
     if (form.elements.botcheck.checked) return;
-    if (!FEEDBACK_KEY) {
+    if (!FEEDBACK_URL) {
       const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
       window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
       return;
     }
     btn.disabled = true; say('Sending...');
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const res = await fetch(FEEDBACK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ access_key: FEEDBACK_KEY, subject: SUBJECT, from_name: 'YeS Analytics website', message: text, email: email || undefined })
+        body: JSON.stringify({ _subject: SUBJECT, message: text, email: email || undefined })
       });
-      const data = await res.json();
-      if (data && data.success) { form.reset(); say('Thank you, your message was sent.'); }
+      if (res.ok) { form.reset(); say('Thank you, your message was sent.'); }
       else say('Could not send. Please email info@yes-analytics.com instead.', true);
     } catch (err) {
       say('Could not send. Please email info@yes-analytics.com instead.', true);
