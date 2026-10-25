@@ -3,8 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YeS Analytics — Turning Data into Decisions</title>
+<title>YeS Analytics | Turning Data into Decisions</title>
 <meta name="description" content="YeS Analytics: data analytics, BI dashboards and data engineering, built by Yevhen Sierikov. Featured work: carstats.ie, live Irish vehicle registration analytics.">
+<link rel="canonical" href="https://yes-analytics.com/">
+<link rel="icon" href="/site-assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/site-assets/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yes-analytics.com/">
+<meta property="og:site_name" content="YeS Analytics">
+<meta property="og:title" content="YeS Analytics | Turning Data into Decisions">
+<meta property="og:description" content="Data analytics, BI dashboards and data engineering. Featured work: carstats.ie, live Irish vehicle registration analytics.">
+<meta property="og:image" content="https://yes-analytics.com/site-assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="YeS Analytics: Turning Data into Decisions">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="YeS Analytics | Turning Data into Decisions">
+<meta name="twitter:description" content="Data analytics, BI dashboards and data engineering. Featured work: carstats.ie, live Irish vehicle registration analytics.">
+<meta name="twitter:image" content="https://yes-analytics.com/site-assets/og-image.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -150,7 +168,7 @@
     letter-spacing:0.4em; color:var(--text-muted); margin-top:8px;
   }
   .hero-divider{width:1px; height:104px; background:var(--border);}
-  .hero-tagline{font-family:'Poppins', sans-serif; font-size:clamp(2rem, 4.2vw, 2.9rem); font-weight:700; color:#fff; line-height:1.15;}
+  .hero-tagline{font-family:'Poppins', sans-serif; font-size:clamp(2rem, 4.2vw, 2.9rem); font-weight:700; color:#fff; line-height:1.15; letter-spacing:normal;}
   .hero-tagline .accent{color:var(--blue-soft);}
   .hero-strapline{font-size:1.05rem; color:var(--text-muted); margin-top:14px; letter-spacing:0.02em;}
 
@@ -270,6 +288,7 @@
   #cookie-banner.visible{transform:translateY(0);}
   #cookie-banner p{font-size:0.9rem; color:var(--text-muted); flex:1 1 280px; margin:0;}
   #cookie-banner strong{color:var(--text);}
+  #cookie-banner a{color:var(--blue-soft); text-decoration:underline;}
   .cookie-actions{display:flex; gap:10px; flex-wrap:wrap;}
   .cookie-btn{
     padding:10px 20px; border-radius:7px; font-size:0.88rem; font-weight:500; cursor:pointer; border:1px solid transparent;
@@ -364,7 +383,7 @@
         </div>
         <div class="hero-divider"></div>
         <div>
-          <div class="hero-tagline">Turning Data<br>into <span class="accent">Decisions</span></div>
+          <h1 class="hero-tagline">Turning Data<br>into <span class="accent">Decisions</span></h1>
           <div class="hero-strapline">Analytics. Insights. Impact.</div>
         </div>
       </div>
@@ -498,12 +517,13 @@
     <div class="footer-links">
       <a href="https://linkedin.com/company/yes-analytics" target="_blank" rel="noopener">LinkedIn</a>
       <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>
+      <a href="/privacy/">Privacy</a>
     </div>
   </div>
 </footer>
 
 <div id="cookie-banner" role="dialog" aria-label="Cookie consent">
-  <p><strong>We use cookies</strong> to understand how visitors use this site. No data is collected until you accept.</p>
+  <p><strong>We use cookies</strong> to understand how visitors use this site. No analytics cookies are set until you accept. <a href="/privacy/">Learn more</a></p>
   <div class="cookie-actions">
     <button class="cookie-btn cookie-decline" id="cookie-decline">Decline</button>
     <button class="cookie-btn cookie-accept" id="cookie-accept">Accept</button>
@@ -517,9 +537,6 @@
     var choice = localStorage.getItem('cookie-consent');
     function grant(){
       gtag('consent', 'update', {
-        'ad_storage': 'granted',
-        'ad_user_data': 'granted',
-        'ad_personalization': 'granted',
         'analytics_storage': 'granted'
       });
     }
