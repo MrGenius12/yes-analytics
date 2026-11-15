@@ -83,6 +83,9 @@
   }
   .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
   .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  .nav-dropdown-menu .menu-group{display:block; padding:10px 12px 4px; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); font-weight:600;}
+  .nav-dropdown-menu .menu-group:not(:first-child){margin-top:4px; border-top:1px solid var(--border); padding-top:12px;}
+  @media (max-width:860px){ .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu{transform:none;} }
   @media (max-width:860px){
     .nav-dropdown-menu{
       position:static; transform:none; box-shadow:none; border:none; background:transparent;
@@ -115,17 +118,23 @@
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <div class="nav-dropdown-menu">
+          <span class="menu-group">Web tools</span>
           <a href="/tools/bold-text.html">
             Bold text generator
             <span class="tool-desc">Write posts with bold, italic and symbols</span>
           </a>
-          <a href="/tools/bold-text-extension/">
-            Chrome extension
-            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
-          </a>
           <a href="/tools/job-search/">
             Job search launcher
             <span class="tool-desc">Search every job site at once, newest first</span>
+          </a>
+          <span class="menu-group">Chrome extensions</span>
+          <a href="/tools/bold-text-extension/">
+            Bold and Symbols for Posts
+            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
+          </a>
+          <a href="/tools/job-search/#extension">
+            Job Search Launcher
+            <span class="tool-desc">Coming soon to the Chrome Web Store</span>
           </a>
         </div>
       </div>
