@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy: Job Search Launcher | YeS Analytics</title>
+<meta name="description" content="Privacy policy of the Job Search Launcher browser extension by YeS Analytics.">
+<link rel="canonical" href="https://yes-analytics.com/tools/job-search/privacy.html">
+<link rel="icon" href="/site-assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#050b18; --bg-end:#0a1936; --surface:#0e1930; --border:#1c2c4a; --text:#edf1f8; --muted:#8b96ac; --blue-soft:#5ea1ff;
+    --text-muted:#8b96ac; --blue:#2f81fe; --blue-dim:rgba(47,129,254,0.14); --bg-deep:#050b18;}
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{color:var(--text); font-family:'Inter',system-ui,sans-serif; line-height:1.7; min-height:100vh;
+       background:radial-gradient(ellipse 80% 60% at 70% 0%, var(--bg-end) 0%, var(--bg) 62%);}
+  .wrap{max-width:720px; margin:0 auto; padding:64px 24px 90px;}
+  h1{font-family:'Poppins',sans-serif; font-size:clamp(1.7rem,4vw,2.3rem); line-height:1.25; margin-bottom:8px;}
+  h2{font-family:'Poppins',sans-serif; font-size:1.1rem; margin:32px 0 8px; color:var(--blue-soft);}
+  p, li{color:#c9d2e3;}
+  ul{padding-left:22px; margin-top:6px;}
+  li{margin:6px 0;}
+  .meta{color:var(--muted); font-size:0.9rem;}
+  a{color:var(--blue-soft); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  footer{margin-top:50px; padding-top:22px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--muted);}
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(5,11,24,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(28,44,74,0.6);
+  }
+  .site-nav nav{
+    max-width:1160px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo-mark{display:flex; align-items:center;}
+  .logo-mark img{display:block; width:auto;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:0.9rem; color:var(--text-muted); transition:color .2s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    padding:9px 18px; border:1px solid var(--blue); border-radius:6px;
+    font-size:0.85rem; color:var(--blue-soft) !important; transition:all .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{background:var(--blue-dim); color:#fff !important;}
+
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
+
+  /* ---------- NAV DROPDOWN ---------- */
+  .nav-dropdown{position:relative;}
+  .nav-dropdown-toggle{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    font-size:0.9rem; color:var(--text-muted); font-family:'Inter', sans-serif; padding:0;
+    transition:color .2s ease;
+  }
+  .nav-dropdown-toggle:hover, .nav-dropdown-toggle:focus-visible, .nav-dropdown.open .nav-dropdown-toggle{color:var(--text);}
+  .nav-dropdown-toggle svg{width:12px; height:12px; stroke:currentColor; transition:transform .2s ease;}
+  .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg);}
+  .nav-dropdown-menu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-8px);
+    min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:8px; margin-top:14px; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:60;
+  }
+  .nav-dropdown-menu::before{
+    content:''; position:absolute; left:0; right:0; top:-14px; height:14px; background:transparent;
+    pointer-events:auto;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu{
+    opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:8px;
+    color:var(--text); font-size:0.88rem; transition:background .15s ease;
+  }
+  .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
+  .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  @media (max-width:860px){
+    .nav-dropdown-menu{
+      position:static; transform:none; box-shadow:none; border:none; background:transparent;
+      padding:4px 0 4px 14px; display:none; opacity:1; min-width:0;
+    }
+    .nav-dropdown.open .nav-dropdown-menu{display:flex; flex-direction:column;}
+    .nav-dropdown-toggle{width:100%; justify-content:space-between; padding:2px 0;}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none; position:fixed; top:64px; left:0; right:0; background:var(--bg-deep); flex-direction:column; align-items:flex-start; padding:24px 32px; border-bottom:1px solid var(--border); gap:20px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  .site-nav a:hover{text-decoration:none;}
+  .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
+  body{padding-top:68px;}
+</style>
+</head>
+<body>
+<header class="site-nav">
+  <nav>
+    <a href="/" class="logo-mark"><img src="/tools/lib/yes-logo.png" alt="YeS Analytics" height="40"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#directions">Directions</a>
+      <a href="/#work">Work</a>
+      <a href="/#about">About</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsDropdownToggle" aria-expanded="false">
+          Free tools
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="/tools/bold-text.html">
+            Bold text generator
+            <span class="tool-desc">Write posts with bold, italic and symbols</span>
+          </a>
+          <a href="/tools/bold-text-extension/">
+            Chrome extension
+            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
+          </a>
+          <a href="/tools/job-search/">
+            Job search launcher
+            <span class="tool-desc">Search every job site at once, newest first</span>
+          </a>
+        </div>
+      </div>
+      <a href="/#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+<div class="wrap">
+  <h1>Privacy Policy</h1>
+  <p class="meta">Job Search Launcher, a browser extension by <a href="https://yes-analytics.com/">YeS Analytics</a>. Last updated: 15 November 2026.</p>
+
+  <h2>The short version</h2>
+  <p>The extension does not collect, sell or send any personal data. It builds search links for job sites and opens them in new tabs. That is all.</p>
+
+  <h2>What the extension remembers</h2>
+  <p>So the popup can remember your settings, the extension keeps these in your browser's extension storage:</p>
+  <ul>
+    <li>the job title, country, city and filters you last entered</li>
+    <li>which job sites you selected for each country</li>
+    <li>your recent searches (up to 15) and saved searches (up to 20)</li>
+  </ul>
+  <p>If you use Chrome Sync, Chrome may sync these settings between your own devices through your Google account. They are never sent to us or anyone else. You can delete recent searches in the popup at any time, and removing the extension deletes all of its data.</p>
+
+  <h2>Data we do not collect</h2>
+  <ul>
+    <li>No personal information, names, emails or account details</li>
+    <li>No browsing history and no content of the pages you visit</li>
+    <li>No analytics, tracking pixels, cookies or advertising identifiers</li>
+    <li>No remote code. All code ships inside the extension package.</li>
+  </ul>
+
+  <h2>Why the extension needs its permissions</h2>
+  <ul>
+    <li><b>Storage:</b> to remember the items listed above.</li>
+    <li><b>Tab groups:</b> to put the tabs opened for one search into a single tab group named after that search.</li>
+    <li><b>Web navigation:</b> to notice when a tab the extension opened fails to load (some job sites reject the first request) and reload it up to 2 times. Only load errors and completion of its own tabs are used. The extension cannot read page content and does not store browsing history.</li>
+  </ul>
+  <p>The extension has no access to the content of any website.</p>
+
+  <h2>Job sites</h2>
+  <p>When you press Open, the job sites you selected open in new tabs, as if you had searched on them yourself. Each site then handles your visit under its own privacy policy. Job Search Launcher is not affiliated with LinkedIn, Indeed, Glassdoor or any other job site.</p>
+
+  <h2>The web version</h2>
+  <p>The <a href="/tools/job-search/">web version</a> of the tool on this site works the same way. Your recent searches are kept only in your browser's local storage and are never sent to us.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If the extension ever changes how it handles data, this page will be updated and the date above will change.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a></p>
+
+  <footer>
+    <a href="/tools/job-search/">Job Search Launcher</a> &middot; <a href="/">yes-analytics.com</a>
+  </footer>
+</div>
+<script>
+// Menu: mobile toggle and Free tools dropdown, same behaviour as the main page.
+(function () {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  const dd = document.getElementById('toolsDropdown');
+  const ddt = document.getElementById('toolsDropdownToggle');
+  ddt.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddt.setAttribute('aria-expanded', dd.classList.toggle('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+</script>
+</body>
+</html>
