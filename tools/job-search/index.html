@@ -94,7 +94,9 @@
   .status{min-height:22px; margin-top:10px; font-size:0.88rem; color:var(--text-muted);}
   .status.warn{color:var(--warn);}
   .btn-primary.stepping{background:#1f6fe0;}
-  .hint{margin-top:8px; font-size:0.8rem; color:var(--text-muted);}
+  .hint{margin-top:8px; font-size:0.84rem; color:#aab6cc; display:flex; gap:7px; align-items:flex-start;}
+  .hint[hidden]{display:none;}
+  .hint::before{content:'i'; flex:none; width:16px; height:16px; margin-top:2px; border-radius:50%; border:1px solid var(--blue-soft); color:var(--blue-soft); font-size:0.7rem; font-weight:700; line-height:14px; text-align:center; font-style:italic;}
   .popup-help{margin-top:14px; padding:14px 16px; border-radius:12px; border:1px solid rgba(244,194,107,0.35);
     background:rgba(244,194,107,0.07); font-size:0.9rem; color:#e9dcc0;}
   .popup-help strong{color:var(--warn);}
@@ -326,6 +328,7 @@
         <button type="button" class="link" id="resetForm">Reset</button>
       </div>
       <div class="actions"><button type="submit" class="btn btn-primary" id="openAllTop">Open selected</button></div>
+      <p class="hint open-hint">Each site opens in a new tab. If your browser asks, allow pop-ups for this site.</p>
     </form>
 
     <div class="card">
@@ -339,7 +342,7 @@
         <button type="button" class="btn btn-ghost" id="copyLinks">Copy links</button>
         <button type="button" class="btn btn-ghost" id="shareSearch" title="Copy a link to this page with your search filled in">Share search</button>
       </div>
-      <p class="hint" id="openHint">Each site opens in a new tab. If your browser asks, allow pop-ups for this site.</p>
+      <p class="hint open-hint">Each site opens in a new tab. If your browser asks, allow pop-ups for this site.</p>
       <div class="popup-help" id="popupHelp" hidden role="status">
         <strong id="popupHelpTitle">Your browser opened 1 of 9 sites.</strong>
         <ol>
@@ -633,9 +636,15 @@
     $("popupHowText").innerHTML = html;
     $("popupHelpTitle").textContent = `Your browser opened ${opened} of ${total} sites.`;
     $("popupHelp").hidden = false;
-    $("openHint").hidden = true;
+    setHints(true);
   }
-  function hidePopupHelp() { $("popupHelp").hidden = true; $("openHint").hidden = popupsOk(); }
+  const setHints = (hidden) => document.querySelectorAll(".open-hint").forEach((h) => (h.hidden = hidden));
+  function hidePopupHelp() { $("popupHelp").hidden = true; setHints(popupsOk()); }
+  // Show the callout right under the button that was pressed.
+  function placePopupHelp(fromId) {
+    const hint = $(fromId).closest(".actions").nextElementSibling;
+    hint.after($("popupHelp"));
+  }
   function markProgress() {
     const pending = new Set(queue.map((x) => x.id));
     document.querySelectorAll("#sites .site").forEach((row) => {
@@ -659,7 +668,7 @@
     if ($("popupHelp")) hidePopupHelp();
   }
 
-  function openAll() {
+  function openAll(fromId) {
     readForm();
     if (!state.keywords) { $("keywords").focus(); return; }
     const q = query();
@@ -686,10 +695,11 @@
       queue = blocked; queueTotal = sites.length; queueSites = new Set(sites.map((x) => x.id));
       setPopupsOk(false);
       setOpenLabels(stepLabel(), true); markProgress();
+      placePopupHelp(typeof fromId === "string" ? fromId : "openAll");
       showPopupHelp(sites.length - blocked.length, sites.length);
       setStatus("");
     } else {
-      if (sites.length > 1) { setPopupsOk(true); $("openHint").hidden = true; }
+      if (sites.length > 1) { setPopupsOk(true); setHints(true); }
       setStatus(`Opened ${sites.length} site${sites.length === 1 ? "" : "s"}.`);
     }
   }
@@ -705,15 +715,15 @@
     state = { ...DEFAULTS, ...saved, selected: saved.selected || {}, history: saved.history || [] };
     fromUrl();
     fillForm();
-    $("openHint").hidden = popupsOk();
+    setHints(popupsOk());
     if (STORE_URL) $("storeCta").innerHTML = `<a class="btn btn-primary" style="flex:none" href="${STORE_URL}" target="_blank" rel="noopener">Add to Chrome, it's free</a>`;
 
     const onChange = () => { readForm(); updateClear(); renderSites(); save(); };
     ["keywords", "city"].forEach((id) => $(id).addEventListener("input", onChange));
     ["period", "workType", "newest"].forEach((id) => $(id).addEventListener("change", onChange));
     $("country").addEventListener("change", () => { readForm(); renderCities(); renderSites(); save(); });
-    $("form").addEventListener("submit", (e) => { e.preventDefault(); openAll(); });
-    $("keywords").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); openAll(); } });
+    $("form").addEventListener("submit", (e) => { e.preventDefault(); openAll("openAllTop"); });
+    $("keywords").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); openAll("openAllTop"); } });
 
     document.addEventListener("click", (e) => {
       const clr = e.target.closest(".clear");
@@ -739,7 +749,7 @@
       Object.assign(state, { keywords: "", city: "", period: DEFAULTS.period, workType: "any", newest: true });
       fillForm(); save(); $("keywords").focus();
     });
-    $("openAll").addEventListener("click", openAll);
+    $("openAll").addEventListener("click", () => openAll("openAll"));
     $("copyLinks").addEventListener("click", () => {
       readForm();
       if (!state.keywords) { $("keywords").focus(); return; }
