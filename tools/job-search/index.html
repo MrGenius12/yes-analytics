@@ -94,6 +94,22 @@
   .status{min-height:22px; margin-top:10px; font-size:0.88rem; color:var(--text-muted);}
   .status.warn{color:var(--warn);}
   .btn-primary.stepping{background:#1f6fe0;}
+  .hint{margin-top:8px; font-size:0.8rem; color:var(--text-muted);}
+  .popup-help{margin-top:14px; padding:14px 16px; border-radius:12px; border:1px solid rgba(244,194,107,0.35);
+    background:rgba(244,194,107,0.07); font-size:0.9rem; color:#e9dcc0;}
+  .popup-help strong{color:var(--warn);}
+  .popup-help ol{margin:8px 0 0 18px; display:grid; gap:4px;}
+  .popup-help .how{margin-top:10px;}
+  .popup-help .how summary{font-weight:500; color:var(--blue-soft); display:block;}
+  .popup-help .how summary::after{content:'';}
+  .popup-help .how[open] summary::after{content:'';}
+  .popup-help .how > div{margin-top:8px; padding:10px 12px; border-radius:9px; background:var(--surface-2); color:#c9d2e3;}
+  .popup-help .how p{margin:0 0 6px; font-size:0.86rem; color:#c9d2e3;}
+  .popup-help .how p:last-child{margin:0;}
+  .popup-help .ext-link{margin-top:10px; font-size:0.85rem; color:var(--text-muted);}
+  .blk-icon{display:inline-block; vertical-align:-3px; width:18px; height:18px;}
+  .site.done .name::after{content:' \2713'; color:var(--cyan); font-weight:700;}
+  .site.next{background:var(--blue-dim); border-color:rgba(47,129,254,0.45);}
 
   section.more{padding:46px 0 0;}
   section.more h2{font-family:'Poppins',sans-serif; font-size:1.45rem; margin-bottom:8px;}
@@ -323,6 +339,19 @@
         <button type="button" class="btn btn-ghost" id="copyLinks">Copy links</button>
         <button type="button" class="btn btn-ghost" id="shareSearch" title="Copy a link to this page with your search filled in">Share search</button>
       </div>
+      <p class="hint" id="openHint">Each site opens in a new tab. If your browser asks, allow pop-ups for this site.</p>
+      <div class="popup-help" id="popupHelp" hidden role="status">
+        <strong id="popupHelpTitle">Your browser opened 1 of 9 sites.</strong>
+        <ol>
+          <li>Keep pressing <b>Open next</b>: each click opens one more site.</li>
+          <li>Or allow pop-ups once, and next time all sites open in one click.</li>
+        </ol>
+        <details class="how" id="popupHow">
+          <summary>How to allow pop-ups in <span id="browserName">your browser</span></summary>
+          <div id="popupHowText"></div>
+        </details>
+        <p class="ext-link">Or use the <a href="#extension">Chrome extension</a>: it opens all sites in one click and groups them in one tab group.</p>
+      </div>
       <p class="status" id="status" role="status"></p>
     </div>
   </div>
@@ -347,7 +376,7 @@
   <section class="more">
     <h2>Questions</h2>
     <details><summary>Why does only one tab open?</summary>
-      <p>A web page may open only one new tab per click. If your browser blocks the rest, the button changes to "Open next" and opens one more site with each click. To open all selected sites at once, allow pop-ups for yes-analytics.com (the icon at the right of the address bar). The Chrome extension has no such limit.</p></details>
+      <p>A web page may open only one new tab per click. If your browser blocks the rest, the button changes to "Open next" and opens one more site with each click, and a short guide shows how to allow pop-ups in your browser so that next time all sites open at once. The Chrome extension has no such limit and also puts the sites in one tab group.</p></details>
     <details><summary>What do the yellow labels mean?</summary>
       <p>Some job sites can't apply every filter from a link. For example, Recruit Ireland has no date filter and Totaljobs' own date filter is currently broken. The label tells you which filter that site will ignore, so there are no surprises.</p></details>
     <details><summary>Do you store my searches?</summary>
@@ -505,7 +534,7 @@
       const on = chosen.includes(s.id);
       const badges = badgesFor(s, q).map((t) => `<span class="badge">${t}</span>`).join("");
       const href = ready ? esc(s.build(q)) : "";
-      return `<div class="site${on ? "" : " off"}" title="${s.note ? esc(s.note) : ""}">
+      return `<div class="site${on ? "" : " off"}" data-site="${s.id}" title="${s.note ? esc(s.note) : ""}">
         <input type="checkbox" value="${s.id}" ${on ? "checked" : ""} aria-label="Include ${esc(s.name)}">
         <div><div class="name">${esc(s.name)}</div>${badges ? `<div class="badges">${badges}</div>` : ""}</div>
         ${ready ? `<a class="open-one" href="${href}" target="_blank" rel="noopener" data-id="${s.id}">Open &#8599;</a>` : `<span class="open-one" style="opacity:.35">Open</span>`}
@@ -586,16 +615,49 @@
   // First click tries every selected site; if the browser blocks some, the button
   // switches to "Open next" and opens one more site per click (always allowed).
   let queue = [], queueTotal = 0;
+  const FLAG = "yesJobSearchPopupsOk";
+  const popupsOk = () => { try { return localStorage.getItem(FLAG) === "1"; } catch (_) { return false; } };
+  const setPopupsOk = (v) => { try { v ? localStorage.setItem(FLAG, "1") : localStorage.removeItem(FLAG); } catch (_) {} };
+
+  const BLOCK_ICON = '<svg class="blk-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="2" fill="none" stroke="#c9d2e3" stroke-width="1.8"/><path d="M3 8h18" stroke="#c9d2e3" stroke-width="1.8"/><circle cx="17.5" cy="16.5" r="5" fill="#d93025"/><path d="M15.6 14.6l3.8 3.8M19.4 14.6l-3.8 3.8" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  function browserHelp() {
+    const ua = navigator.userAgent;
+    if (/Edg\//.test(ua)) return ["Edge", `<p>1. Click the ${BLOCK_ICON} pop-up icon at the right end of the address bar.</p><p>2. Choose <b>Always allow pop-ups and redirects from yes-analytics.com</b>, then <b>Done</b>.</p><p>3. Press the Open button again.</p>`];
+    if (/Firefox\//.test(ua)) return ["Firefox", `<p>1. In the yellow bar at the top of the page, click <b>Settings</b> (or <b>Options</b>).</p><p>2. Choose <b>Allow pop-ups for yes-analytics.com</b>.</p><p>3. Press the Open button again.</p>`];
+    if (/Safari\//.test(ua) && !/Chrome\/|Chromium\//.test(ua)) return ["Safari", `<p>1. Open <b>Safari &gt; Settings &gt; Websites &gt; Pop-up Windows</b>.</p><p>2. Set <b>yes-analytics.com</b> to <b>Allow</b>.</p><p>3. Come back and press the Open button again.</p>`];
+    return ["Chrome", `<p>1. Click the ${BLOCK_ICON} pop-up icon at the right end of the address bar.</p><p>2. Choose <b>Always allow pop-ups and redirects from https://yes-analytics.com</b>, then <b>Done</b>.</p><p>3. Press the Open button again.</p>`];
+  }
+  function showPopupHelp(opened, total) {
+    const [name, html] = browserHelp();
+    $("browserName").textContent = name;
+    $("popupHowText").innerHTML = html;
+    $("popupHelpTitle").textContent = `Your browser opened ${opened} of ${total} sites.`;
+    $("popupHelp").hidden = false;
+    $("openHint").hidden = true;
+  }
+  function hidePopupHelp() { $("popupHelp").hidden = true; $("openHint").hidden = popupsOk(); }
+  function markProgress() {
+    const pending = new Set(queue.map((x) => x.id));
+    document.querySelectorAll("#sites .site").forEach((row) => {
+      const id = row.dataset.site, inRun = queueSites.has(id);
+      row.classList.toggle("done", inRun && !pending.has(id));
+      row.classList.toggle("next", !!queue[0] && queue[0].id === id);
+    });
+  }
+  let queueSites = new Set();
 
   function stepLabel() {
     const next = queue[0];
     const done = queueTotal - queue.length + 1;
-    return `Open next: ${next.name} (${done} of ${queueTotal})`;
+    return `Open next: ${next.name} (${done}/${queueTotal})`;
   }
   function setOpenLabels(text, stepping) {
     ["openAll", "openAllTop"].forEach((id) => { $(id).textContent = text; $(id).classList.toggle("stepping", !!stepping); });
   }
-  function resetQueue() { queue = []; queueTotal = 0; }
+  function resetQueue() {
+    queue = []; queueTotal = 0; queueSites = new Set();
+    if ($("popupHelp")) hidePopupHelp();
+  }
 
   function openAll() {
     readForm();
@@ -605,11 +667,15 @@
       const s = queue.shift();
       const w = window.open(s.url, "_blank");
       if (w) { try { w.opener = null; } catch (_) {} }
-      if (queue.length) { setOpenLabels(stepLabel(), true); setStatus(`Opened ${s.name}.`); }
-      else { const total = queueTotal; renderSites(); setStatus(`All ${total} sites opened.`); }
+      const total = queueTotal;
+      if (queue.length) {
+        setOpenLabels(stepLabel(), true); markProgress();
+        $("popupHelpTitle").textContent = `Opened ${total - queue.length} of ${total} sites.`;
+        setStatus("");
+      } else { renderSites(); setStatus(`All ${total} sites opened.`); }
       return;
     }
-    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => ({ name: s.name, url: s.build(q) }));
+    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => ({ id: s.id, name: s.name, url: s.build(q) }));
     remember(); save();
     const blocked = [];
     sites.forEach((s) => {
@@ -617,10 +683,13 @@
       if (w) { try { w.opener = null; } catch (_) { /* cross-origin */ } } else blocked.push(s);
     });
     if (blocked.length) {
-      queue = blocked; queueTotal = sites.length;
-      setOpenLabels(stepLabel(), true);
-      setStatus(`Your browser allows one new tab per click, so press the button again to open each next site. To open all at once next time, allow pop-ups for yes-analytics.com (icon at the right of the address bar).`, true);
+      queue = blocked; queueTotal = sites.length; queueSites = new Set(sites.map((x) => x.id));
+      setPopupsOk(false);
+      setOpenLabels(stepLabel(), true); markProgress();
+      showPopupHelp(sites.length - blocked.length, sites.length);
+      setStatus("");
     } else {
+      if (sites.length > 1) { setPopupsOk(true); $("openHint").hidden = true; }
       setStatus(`Opened ${sites.length} site${sites.length === 1 ? "" : "s"}.`);
     }
   }
@@ -636,6 +705,7 @@
     state = { ...DEFAULTS, ...saved, selected: saved.selected || {}, history: saved.history || [] };
     fromUrl();
     fillForm();
+    $("openHint").hidden = popupsOk();
     if (STORE_URL) $("storeCta").innerHTML = `<a class="btn btn-primary" style="flex:none" href="${STORE_URL}" target="_blank" rel="noopener">Add to Chrome, it's free</a>`;
 
     const onChange = () => { readForm(); updateClear(); renderSites(); save(); };
