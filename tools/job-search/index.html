@@ -93,6 +93,7 @@
   .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
   .status{min-height:22px; margin-top:10px; font-size:0.88rem; color:var(--text-muted);}
   .status.warn{color:var(--warn);}
+  .btn-primary.stepping{background:#1f6fe0;}
 
   section.more{padding:46px 0 0;}
   section.more h2{font-family:'Poppins',sans-serif; font-size:1.45rem; margin-bottom:8px;}
@@ -110,6 +111,25 @@
   summary::after{content:'+'; color:var(--blue-soft); flex:none;}
   details[open] summary::after{content:'\2212';}
   details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
+  .feedback{margin-top:40px; padding:26px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface); text-align:center;}
+  .feedback h2{margin:0 0 6px; font-size:1.15rem;}
+  .feedback > p{margin:0 auto 16px; color:var(--text-muted); font-size:0.92rem; max-width:560px;}
+  .feedback form{max-width:640px; margin:0 auto; text-align:left;}
+  .feedback textarea{width:100%; min-height:96px; resize:vertical; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback textarea:focus, .feedback input[type=email]:focus{border-color:var(--blue);}
+  .feedback .fbrow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .feedback input[type=email]{flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback button{flex:0 0 auto; padding:12px 22px; border-radius:10px; border:none; background:var(--blue); color:#fff; cursor:pointer; font:inherit; font-weight:600; font-size:0.95rem;}
+  .feedback button:disabled{opacity:.6; cursor:default;}
+  .feedback .fbmsg{margin-top:10px; min-height:1.3em; font-size:0.9rem; color:var(--cyan); text-align:center;}
+  .feedback .fbmsg.err{color:#f59e8b;}
+  .feedback .fbnote{margin-top:6px; font-size:0.78rem; color:var(--text-muted); text-align:center;}
+  .feedback .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .feedback h2{font-family:'Poppins',sans-serif;}
+  .feedback textarea, .feedback input[type=email]{font-family:inherit;}
   footer{margin-top:60px; padding:24px 0 48px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
     display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;}
 
@@ -326,8 +346,8 @@
 
   <section class="more">
     <h2>Questions</h2>
-    <details><summary>Why does my browser block some tabs?</summary>
-      <p>A web page may open only one new tab per click. To open all selected sites at once, allow pop-ups for yes-analytics.com when your browser asks (the icon at the right of the address bar), then press Open selected again. Or open the sites one by one with their Open buttons. The Chrome extension has no such limit.</p></details>
+    <details><summary>Why does only one tab open?</summary>
+      <p>A web page may open only one new tab per click. If your browser blocks the rest, the button changes to "Open next" and opens one more site with each click. To open all selected sites at once, allow pop-ups for yes-analytics.com (the icon at the right of the address bar). The Chrome extension has no such limit.</p></details>
     <details><summary>What do the yellow labels mean?</summary>
       <p>Some job sites can't apply every filter from a link. For example, Recruit Ireland has no date filter and Totaljobs' own date filter is currently broken. The label tells you which filter that site will ignore, so there are no surprises.</p></details>
     <details><summary>Do you store my searches?</summary>
@@ -336,9 +356,26 @@
       <p>No. It is an independent free tool by YeS Analytics. It simply builds the same search links you would get by filling in each site's search form yourself.</p></details>
   </section>
 
+  <section class="feedback" id="feedback">
+    <h2>Help improve this tool</h2>
+    <p>Missing a job site or a country? A link that opens the wrong search? An idea for a filter? Tell us. Every message is read.</p>
+    <form id="feedbackForm" novalidate>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="vh" for="fbText">Your suggestion or feedback</label>
+      <textarea id="fbText" name="message" maxlength="3000" placeholder="Your suggestion or feedback..." required></textarea>
+      <div class="fbrow">
+        <label class="vh" for="fbEmail">Your email (optional)</label>
+        <input id="fbEmail" type="email" name="email" maxlength="200" placeholder="Your email (optional)" autocomplete="email">
+        <button type="submit" id="fbSend">Send feedback</button>
+      </div>
+      <p class="fbmsg" id="fbMsg" role="status" aria-live="polite"></p>
+      <p class="fbnote">Only your message and email (if you add one) are sent to us, by email. Your searches are not sent.</p>
+    </form>
+  </section>
+
   <footer>
     <span>&copy; YeS Analytics. Not affiliated with LinkedIn, Indeed, Glassdoor or any job site listed.</span>
-    <span><a href="privacy.html">Extension privacy policy</a> &middot; <a href="/">yes-analytics.com</a></span>
+    <span><a href="/privacy/">Privacy</a> &middot; <a href="privacy.html">Extension privacy policy</a> &middot; <a href="/">yes-analytics.com</a></span>
   </footer>
 </main>
 
@@ -363,6 +400,44 @@
   });
 })();
 
+</script>
+<script>
+// Feedback form, sent through Formspree. Paste the form address between the quotes
+// (looks like https://formspree.io/f/abcdwxyz, it is not a secret). While it is empty,
+// the button opens an email instead.
+(function () {
+  const FEEDBACK_URL = 'https://formspree.io/f/xdeeengl';
+  const SUBJECT = 'Feedback: Job search launcher';
+  const form = document.getElementById('feedbackForm');
+  const msg = document.getElementById('fbMsg');
+  const btn = document.getElementById('fbSend');
+  function say(t, err) { msg.textContent = t; msg.className = 'fbmsg' + (err ? ' err' : ''); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('fbText').value.trim();
+    const email = document.getElementById('fbEmail').value.trim();
+    if (!text) { say('Please write a short message first.', true); return; }
+    if (form.elements.botcheck.checked) return;
+    if (!FEEDBACK_URL) {
+      const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
+      window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
+      return;
+    }
+    btn.disabled = true; say('Sending...');
+    try {
+      const res = await fetch(FEEDBACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: SUBJECT, message: text, email: email || undefined })
+      });
+      if (res.ok) { form.reset(); say('Thank you, your message was sent.'); }
+      else say('Could not send. Please email info@yes-analytics.com instead.', true);
+    } catch (err) {
+      say('Could not send. Please email info@yes-analytics.com instead.', true);
+    }
+    btn.disabled = false;
+  });
+})();
 </script>
 <script>
 // Job Search Launcher, web version. Shares sites.js with the Chrome extension.
@@ -419,6 +494,7 @@
   }
 
   function renderSites() {
+    resetQueue();
     const q = query();
     const list = sitesForCountry(state.country);
     const chosen = selectedIds();
@@ -441,6 +517,7 @@
     const n = chosen.length, all = list.length;
     ["openAll", "openAllTop"].forEach((id) => {
       $(id).textContent = n === 1 ? "Open 1 site" : `Open ${n} sites`;
+      $(id).classList.remove("stepping");
       $(id).disabled = !ready || n === 0;
     });
     $("allSites").checked = n > 0 && n === all;
@@ -505,19 +582,44 @@
     state.newest = p.get("newest") !== "0";
   }
 
+  // A web page may open only one tab per click unless the visitor allows pop-ups.
+  // First click tries every selected site; if the browser blocks some, the button
+  // switches to "Open next" and opens one more site per click (always allowed).
+  let queue = [], queueTotal = 0;
+
+  function stepLabel() {
+    const next = queue[0];
+    const done = queueTotal - queue.length + 1;
+    return `Open next: ${next.name} (${done} of ${queueTotal})`;
+  }
+  function setOpenLabels(text, stepping) {
+    ["openAll", "openAllTop"].forEach((id) => { $(id).textContent = text; $(id).classList.toggle("stepping", !!stepping); });
+  }
+  function resetQueue() { queue = []; queueTotal = 0; }
+
   function openAll() {
     readForm();
     if (!state.keywords) { $("keywords").focus(); return; }
     const q = query();
-    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id));
+    if (queue.length) {
+      const s = queue.shift();
+      const w = window.open(s.url, "_blank");
+      if (w) { try { w.opener = null; } catch (_) {} }
+      if (queue.length) { setOpenLabels(stepLabel(), true); setStatus(`Opened ${s.name}.`); }
+      else { const total = queueTotal; renderSites(); setStatus(`All ${total} sites opened.`); }
+      return;
+    }
+    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => ({ name: s.name, url: s.build(q) }));
     remember(); save();
-    let blocked = 0;
+    const blocked = [];
     sites.forEach((s) => {
-      const w = window.open(s.build(q), "_blank");
-      if (w) { try { w.opener = null; } catch (_) { /* cross-origin */ } } else blocked++;
+      const w = window.open(s.url, "_blank");
+      if (w) { try { w.opener = null; } catch (_) { /* cross-origin */ } } else blocked.push(s);
     });
-    if (blocked) {
-      setStatus(`Your browser blocked ${blocked} of ${sites.length} tabs. Allow pop-ups for yes-analytics.com (icon at the right of the address bar) and press the button again, or use the Open buttons.`, true);
+    if (blocked.length) {
+      queue = blocked; queueTotal = sites.length;
+      setOpenLabels(stepLabel(), true);
+      setStatus(`Your browser allows one new tab per click, so press the button again to open each next site. To open all at once next time, allow pop-ups for yes-analytics.com (icon at the right of the address bar).`, true);
     } else {
       setStatus(`Opened ${sites.length} site${sites.length === 1 ? "" : "s"}.`);
     }
