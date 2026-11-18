@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Search Launcher: search every job site at once | YeS Analytics</title>
+<meta name="description" content="Free job search launcher. Type a job title once and open LinkedIn, Indeed, Glassdoor, IrishJobs, Reed, Work.ua and more with the same filters, newest jobs first.">
+<link rel="icon" href="/site-assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
+<link rel="canonical" href="https://yes-analytics.com/tools/job-search/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Job Search Launcher: every job site, newest jobs first">
+<meta property="og:description" content="Type a job title once and open LinkedIn, Indeed, Glassdoor and local job boards with the same filters. Free, no sign-up.">
+<meta property="og:url" content="https://yes-analytics.com/tools/job-search/">
+<meta property="og:image" content="https://yes-analytics.com/tools/job-search/assets/screenshot-1.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050b18; --bg-deep:#020714; --bg-end:#0a1936; --surface:#0e1930; --surface-2:#0a1428; --border:#1c2c4a;
+    --text:#edf1f8; --text-muted:#8b96ac; --blue:#2f81fe; --blue-soft:#5ea1ff; --blue-dim:rgba(47,129,254,0.14);
+    --cyan:#5eead4; --warn:#f4c26b;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{color:var(--text); font-family:'Inter',system-ui,sans-serif; line-height:1.6; min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    background:radial-gradient(ellipse 80% 55% at 70% 0%, var(--bg-end) 0%, var(--bg-deep) 62%);}
+  a{color:var(--blue-soft); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  .hero{padding:44px 0 22px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--cyan); display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--cyan);}
+  h1{font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(1.9rem,4.4vw,2.8rem); line-height:1.15; margin-bottom:12px;}
+  h1 .accent{color:var(--blue-soft);}
+  .lead{color:var(--text-muted); font-size:1.05rem; max-width:640px;}
+
+  .tool{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; margin-top:26px; align-items:start;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px;}
+  .card h2{font-family:'Poppins',sans-serif; font-size:1.05rem; font-weight:600; margin-bottom:14px;}
+  label{display:block; font-size:0.86rem; font-weight:500; color:#c9d2e3; margin-bottom:12px;}
+  .muted{color:var(--text-muted); font-weight:400;}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .input-wrap{position:relative; display:block; margin-top:5px;}
+  input[type=text], select{width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text); font:inherit; font-size:0.95rem; margin-top:5px;}
+  .input-wrap input[type=text]{margin-top:0; padding-right:34px;}
+  .input-wrap input::-webkit-calendar-picker-indicator{display:none !important;}
+  input[type=text]:focus, select:focus{outline:2px solid var(--blue); outline-offset:-1px; border-color:transparent;}
+  select option{background:var(--surface);}
+  .clear{position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:none; color:var(--text-muted);
+    font-size:0.85rem; padding:4px 7px; border-radius:6px; cursor:pointer;}
+  .clear:hover{color:var(--text); background:var(--blue-dim);}
+  .checks{display:flex; justify-content:space-between; align-items:center; margin:2px 0 4px;}
+  .check{display:flex; align-items:center; gap:8px; margin:0; cursor:pointer;}
+  input[type=checkbox]{accent-color:var(--blue); width:16px; height:16px; cursor:pointer;}
+  .link{border:0; background:none; color:var(--blue-soft); font:inherit; font-size:0.85rem; cursor:pointer; padding:0;}
+  .link:hover{text-decoration:underline;}
+  .link.danger{color:#ff8a80;}
+  .recent{margin:-4px 0 12px; font-size:0.85rem;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+  .chip{display:inline-flex; align-items:center; gap:2px; border:1px solid var(--border); border-radius:999px; background:var(--surface-2);
+    font-size:0.82rem; color:#c9d2e3;}
+  .chip button{border:0; background:none; color:inherit; font:inherit; cursor:pointer; padding:3px 4px 3px 10px;}
+  .chip button.x{padding:3px 9px 3px 2px; color:var(--text-muted);}
+  .chip button.x:hover{color:#ff8a80;}
+
+  .sites-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .group-title{font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--text-muted); margin:14px 0 6px;}
+  .site{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; padding:8px 10px; border-radius:10px;
+    border:1px solid transparent;}
+  .site:hover{background:var(--surface-2); border-color:var(--border);}
+  .site .name{font-size:0.95rem; color:var(--text);}
+  .badges{display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;}
+  .badge{font-size:0.7rem; padding:1px 7px; border-radius:999px; background:rgba(244,194,107,0.1); color:var(--warn);}
+  .open-one{font-size:0.85rem; padding:6px 12px; border-radius:8px; border:1px solid var(--border); color:var(--text); white-space:nowrap;}
+  .open-one:hover{background:var(--blue-dim); text-decoration:none;}
+  .site.off .name, .site.off .open-one{opacity:0.45;}
+
+  .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;}
+  .btn{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:600; font-size:0.95rem; border:1px solid transparent;
+    cursor:pointer; font-family:inherit; transition:transform .15s ease, box-shadow .2s ease, background .2s ease;}
+  .btn-primary{background:var(--blue); color:#fff; flex:1;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(47,129,254,0.32);}
+  .btn-primary:disabled{opacity:0.5; cursor:default; transform:none; box-shadow:none;}
+  .btn-ghost{border-color:var(--border); color:var(--text); background:transparent;}
+  .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
+  .status{min-height:22px; margin-top:10px; font-size:0.88rem; color:var(--text-muted);}
+  .status.warn{color:var(--warn);}
+
+  section.more{padding:46px 0 0;}
+  section.more h2{font-family:'Poppins',sans-serif; font-size:1.45rem; margin-bottom:8px;}
+  .sub{color:var(--text-muted); max-width:640px; margin-bottom:20px;}
+  .ext{display:grid; grid-template-columns:1fr 1.1fr; gap:28px; align-items:center;}
+  .ext ul{list-style:none; display:grid; gap:8px; margin:14px 0 20px;}
+  .ext li{color:#c9d2e3; padding-left:26px; position:relative;}
+  .ext li::before{content:'\2713'; position:absolute; left:0; color:var(--cyan); font-weight:700;}
+  .shot{border-radius:14px; border:1px solid var(--border); overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.45);}
+  .shot img{display:block; width:100%; height:auto;}
+  .soon{display:inline-block; padding:12px 18px; border-radius:10px; border:1px solid var(--border); color:var(--text-muted); font-size:0.95rem;}
+  details{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px;}
+  summary{cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between; gap:14px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'+'; color:var(--blue-soft); flex:none;}
+  details[open] summary::after{content:'\2212';}
+  details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
+  footer{margin-top:60px; padding:24px 0 48px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;}
+
+  @media (max-width:860px){ .tool, .ext{grid-template-columns:1fr;} }
+  @media (max-width:520px){ .wrap{padding:0 16px;} .row{grid-template-columns:1fr;} .card{padding:18px;} }
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(5,11,24,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(28,44,74,0.6);
+  }
+  .site-nav nav{
+    max-width:1160px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo-mark{display:flex; align-items:center;}
+  .logo-mark img{display:block; width:auto;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:0.9rem; color:var(--text-muted); transition:color .2s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    padding:9px 18px; border:1px solid var(--blue); border-radius:6px;
+    font-size:0.85rem; color:var(--blue-soft) !important; transition:all .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{background:var(--blue-dim); color:#fff !important;}
+
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
+
+  /* ---------- NAV DROPDOWN ---------- */
+  .nav-dropdown{position:relative;}
+  .nav-dropdown-toggle{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    font-size:0.9rem; color:var(--text-muted); font-family:'Inter', sans-serif; padding:0;
+    transition:color .2s ease;
+  }
+  .nav-dropdown-toggle:hover, .nav-dropdown-toggle:focus-visible, .nav-dropdown.open .nav-dropdown-toggle{color:var(--text);}
+  .nav-dropdown-toggle svg{width:12px; height:12px; stroke:currentColor; transition:transform .2s ease;}
+  .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg);}
+  .nav-dropdown-menu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-8px);
+    min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:8px; margin-top:14px; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:60;
+  }
+  .nav-dropdown-menu::before{
+    content:''; position:absolute; left:0; right:0; top:-14px; height:14px; background:transparent;
+    pointer-events:auto;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu{
+    opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:8px;
+    color:var(--text); font-size:0.88rem; transition:background .15s ease;
+  }
+  .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
+  .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  .nav-dropdown-menu .menu-group{display:block; padding:10px 12px 4px; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); font-weight:600;}
+  .nav-dropdown-menu .menu-group:not(:first-child){margin-top:4px; border-top:1px solid var(--border); padding-top:12px;}
+  @media (max-width:860px){ .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu{transform:none;} }
+  @media (max-width:860px){
+    .nav-dropdown-menu{
+      position:static; transform:none; box-shadow:none; border:none; background:transparent;
+      padding:4px 0 4px 14px; display:none; opacity:1; min-width:0;
+    }
+    .nav-dropdown.open .nav-dropdown-menu{display:flex; flex-direction:column;}
+    .nav-dropdown-toggle{width:100%; justify-content:space-between; padding:2px 0;}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none; position:fixed; top:64px; left:0; right:0; background:var(--bg-deep); flex-direction:column; align-items:flex-start; padding:24px 32px; border-bottom:1px solid var(--border); gap:20px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  .site-nav a:hover{text-decoration:none;}
+  .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
+  body{padding-top:68px;}
+
+</style>
+</head>
+<body>
+<header class="site-nav">
+  <nav>
+    <a href="/" class="logo-mark"><img src="/tools/lib/yes-logo.png" alt="YeS Analytics" height="40"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#directions">Directions</a>
+      <a href="/#work">Work</a>
+      <a href="/#about">About</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsDropdownToggle" aria-expanded="false">
+          Free tools
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <span class="menu-group">Web tools</span>
+          <a href="/tools/bold-text.html">
+            Bold text generator
+            <span class="tool-desc">Write posts with bold, italic and symbols</span>
+          </a>
+          <a href="/tools/job-search/" aria-current="page">
+            Job search launcher
+            <span class="tool-desc">Search every job site at once, newest first</span>
+          </a>
+          <span class="menu-group">Chrome extensions</span>
+          <a href="/tools/bold-text-extension/">
+            Bold and Symbols for Posts
+            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
+          </a>
+          <a href="/tools/job-search/#extension">
+            Job Search Launcher
+            <span class="tool-desc">Coming soon to the Chrome Web Store</span>
+          </a>
+        </div>
+      </div>
+      <a href="/#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+<main class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Free tool</div>
+    <h1>One search. <span class="accent">Every job site.</span></h1>
+    <p class="lead">Type a job title once and open LinkedIn, Indeed, Glassdoor and local job boards with the same filters, newest jobs first. No sign-up, nothing to install.</p>
+  </div>
+
+  <div class="tool">
+    <form class="card" id="form" autocomplete="off">
+      <h2>Your search</h2>
+      <label>Job title or keywords
+        <span class="input-wrap">
+          <input id="keywords" type="text" placeholder="e.g. Data Analyst" list="titleList">
+          <button type="button" class="clear" data-for="keywords" aria-label="Clear job title" hidden>&#10005;</button>
+        </span>
+        <datalist id="titleList"></datalist>
+      </label>
+      <div class="recent" id="recentBar" hidden>
+        <span class="muted">Recent:</span>
+        <div class="chips" id="recentChips"></div>
+      </div>
+      <div class="row">
+        <label>Country
+          <select id="country"></select>
+        </label>
+        <label>City <span class="muted">(optional)</span>
+          <span class="input-wrap">
+            <input id="city" type="text" placeholder="e.g. Dublin" list="cityList">
+            <button type="button" class="clear" data-for="city" aria-label="Clear city" hidden>&#10005;</button>
+          </span>
+          <datalist id="cityList"></datalist>
+        </label>
+      </div>
+      <div class="row">
+        <label>Posted within
+          <select id="period">
+            <option value="1h">Last hour</option>
+            <option value="24h">Last 24 hours</option>
+            <option value="3d">Last 3 days</option>
+            <option value="7d" selected>Last week</option>
+            <option value="30d">Last month</option>
+            <option value="any">Any time</option>
+          </select>
+        </label>
+        <label>Work type
+          <select id="workType">
+            <option value="any">Any</option>
+            <option value="remote">Remote</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="onsite">On-site</option>
+          </select>
+        </label>
+      </div>
+      <div class="checks">
+        <label class="check"><input id="newest" type="checkbox" checked> Newest first</label>
+        <button type="button" class="link" id="resetForm">Reset</button>
+      </div>
+      <div class="actions"><button type="submit" class="btn btn-primary" id="openAllTop">Open selected</button></div>
+    </form>
+
+    <div class="card">
+      <div class="sites-head">
+        <h2 style="margin:0">Job sites</h2>
+        <label class="check" style="font-size:0.85rem"><input type="checkbox" id="allSites"> All</label>
+      </div>
+      <div id="sites"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="openAll">Open selected</button>
+        <button type="button" class="btn btn-ghost" id="copyLinks">Copy links</button>
+        <button type="button" class="btn btn-ghost" id="shareSearch" title="Copy a link to this page with your search filled in">Share search</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </div>
+  </div>
+
+  <section class="more" id="extension">
+    <div class="ext">
+      <div>
+        <h2>Even faster in Chrome</h2>
+        <p class="sub" style="margin-bottom:0">The free Job Search Launcher extension does the same from your toolbar, with a few extras a web page can't do.</p>
+        <ul>
+          <li>Opens every site in one click, no pop-up prompts</li>
+          <li>Groups the results in one named tab group</li>
+          <li>Reloads job sites that fail to load on the first try</li>
+          <li>Saved searches, right in your browser</li>
+        </ul>
+        <span id="storeCta"><span class="soon">Coming soon to the Chrome Web Store</span></span>
+      </div>
+      <div class="shot"><img src="assets/screenshot-1.png" width="1280" height="800" loading="lazy" alt="The Job Search Launcher extension popup with a search for Data Analyst in Dublin and nine job sites selected"></div>
+    </div>
+  </section>
+
+  <section class="more">
+    <h2>Questions</h2>
+    <details><summary>Why does my browser block some tabs?</summary>
+      <p>A web page may open only one new tab per click. To open all selected sites at once, allow pop-ups for yes-analytics.com when your browser asks (the icon at the right of the address bar), then press Open selected again. Or open the sites one by one with their Open buttons. The Chrome extension has no such limit.</p></details>
+    <details><summary>What do the yellow labels mean?</summary>
+      <p>Some job sites can't apply every filter from a link. For example, Recruit Ireland has no date filter and Totaljobs' own date filter is currently broken. The label tells you which filter that site will ignore, so there are no surprises.</p></details>
+    <details><summary>Do you store my searches?</summary>
+      <p>No. Your recent searches are kept only in your own browser (local storage) so you can reuse them. Nothing is sent to us. Clear them at any time with the &#10005; next to each one.</p></details>
+    <details><summary>Is this tool connected to LinkedIn or the other sites?</summary>
+      <p>No. It is an independent free tool by YeS Analytics. It simply builds the same search links you would get by filling in each site's search form yourself.</p></details>
+  </section>
+
+  <footer>
+    <span>&copy; YeS Analytics. Not affiliated with LinkedIn, Indeed, Glassdoor or any job site listed.</span>
+    <span><a href="privacy.html">Extension privacy policy</a> &middot; <a href="/">yes-analytics.com</a></span>
+  </footer>
+</main>
+
+<script src="sites.js"></script>
+<script>
+// Menu: mobile toggle and Free tools dropdown, same behaviour as the main page.
+(function () {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  const dd = document.getElementById('toolsDropdown');
+  const ddt = document.getElementById('toolsDropdownToggle');
+  ddt.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddt.setAttribute('aria-expanded', dd.classList.toggle('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+
+</script>
+<script>
+// Job Search Launcher, web version. Shares sites.js with the Chrome extension.
+(function () {
+  const STORE_URL = ""; // set to the Chrome Web Store link once the extension is live
+  const $ = (id) => document.getElementById(id);
+  const KEY = "yesJobSearch";
+  const HISTORY_MAX = 15;
+  const DEFAULTS = { keywords: "", country: "IE", city: "", period: "7d", workType: "any", newest: true, selected: {}, history: [] };
+  let state = { ...DEFAULTS };
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) { return {}; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) { /* storage may be unavailable */ }
+  }
+  const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const countryName = (c) => (COUNTRIES.find((x) => x.code === c) || {}).name || c;
+
+  function query() {
+    return { keywords: state.keywords, country: state.country, countryName: countryName(state.country), city: state.city,
+      period: state.period, newest: state.newest, workType: state.workType };
+  }
+  function readForm() {
+    state.keywords = $("keywords").value.trim();
+    state.country = $("country").value;
+    state.city = $("city").value.trim();
+    state.period = $("period").value;
+    state.workType = $("workType").value;
+    state.newest = $("newest").checked;
+  }
+  function setStatus(msg, warn) {
+    const s = $("status");
+    s.textContent = msg; s.className = "status" + (warn ? " warn" : "");
+    if (msg && !warn) setTimeout(() => { if (s.textContent === msg) s.textContent = ""; }, 4000);
+  }
+
+  function badgesFor(site, q) {
+    const b = [];
+    if (q.period !== "any" && !site.supports.period) b.push("no date filter");
+    if (q.newest && !site.supports.newest) b.push("no sorting");
+    const cityOk = site.supportsCity ? site.supportsCity(q) : site.supports.city !== false;
+    if (q.city && !cityOk) b.push("no city");
+    const wtOk = site.supportsWorkType ? site.supportsWorkType(q) : site.supports.workType;
+    if (q.workType !== "any" && !wtOk) b.push("no work type");
+    return b;
+  }
+
+  function selectedIds() {
+    const list = sitesForCountry(state.country);
+    if (!state.selected[state.country]) state.selected[state.country] = list.map((s) => s.id);
+    return state.selected[state.country];
+  }
+
+  function renderSites() {
+    const q = query();
+    const list = sitesForCountry(state.country);
+    const chosen = selectedIds();
+    const global = list.filter((s) => s.countries === "*" || s.countries.length > 1);
+    const local = list.filter((s) => !global.includes(s));
+    const ready = !!q.keywords;
+    const row = (s) => {
+      const on = chosen.includes(s.id);
+      const badges = badgesFor(s, q).map((t) => `<span class="badge">${t}</span>`).join("");
+      const href = ready ? esc(s.build(q)) : "";
+      return `<div class="site${on ? "" : " off"}" title="${s.note ? esc(s.note) : ""}">
+        <input type="checkbox" value="${s.id}" ${on ? "checked" : ""} aria-label="Include ${esc(s.name)}">
+        <div><div class="name">${esc(s.name)}</div>${badges ? `<div class="badges">${badges}</div>` : ""}</div>
+        ${ready ? `<a class="open-one" href="${href}" target="_blank" rel="noopener" data-id="${s.id}">Open &#8599;</a>` : `<span class="open-one" style="opacity:.35">Open</span>`}
+      </div>`;
+    };
+    let html = '<div class="group-title">Global</div>' + global.map(row).join("");
+    if (local.length) html += `<div class="group-title">${esc(countryName(state.country))}</div>` + local.map(row).join("");
+    $("sites").innerHTML = html;
+    const n = chosen.length, all = list.length;
+    ["openAll", "openAllTop"].forEach((id) => {
+      $(id).textContent = n === 1 ? "Open 1 site" : `Open ${n} sites`;
+      $(id).disabled = !ready || n === 0;
+    });
+    $("allSites").checked = n > 0 && n === all;
+    $("allSites").indeterminate = n > 0 && n < all;
+  }
+
+  function renderRecent() {
+    const h = state.history || [];
+    $("recentBar").hidden = !h.length;
+    $("recentChips").innerHTML = h.map((t, i) =>
+      `<span class="chip"><button type="button" data-use="${i}">${esc(t)}</button><button type="button" class="x" data-del="${i}" aria-label="Delete ${esc(t)}">&#10005;</button></span>`).join("") +
+      (h.length ? ' <button type="button" class="link danger" id="clearRecent">Clear all</button>' : "");
+    const seen = new Set(h.map((t) => t.toLowerCase()));
+    $("titleList").innerHTML = h.map((t) => `<option value="${esc(t)}"></option>`).join("") +
+      JOB_TITLES.filter((t) => !seen.has(t.toLowerCase())).map((t) => `<option value="${esc(t)}"></option>`).join("");
+  }
+
+  function renderCities() {
+    const list = CITY_SUGGESTIONS[state.country] || [];
+    $("cityList").innerHTML = list.map((c) => `<option value="${esc(c)}"></option>`).join("");
+    $("city").placeholder = list[0] ? `e.g. ${list[0]}` : "City";
+  }
+
+  function updateClear() {
+    document.querySelectorAll(".clear").forEach((b) => (b.hidden = !$(b.dataset.for).value));
+  }
+
+  function fillForm() {
+    $("keywords").value = state.keywords;
+    $("country").value = state.country;
+    $("city").value = state.city;
+    $("period").value = state.period;
+    $("workType").value = state.workType;
+    $("newest").checked = state.newest;
+    updateClear(); renderCities(); renderRecent(); renderSites();
+  }
+
+  function remember() {
+    const k = state.keywords;
+    if (!k) return;
+    state.history = [k, ...(state.history || []).filter((t) => t.toLowerCase() !== k.toLowerCase())].slice(0, HISTORY_MAX);
+    renderRecent();
+  }
+
+  function shareUrl() {
+    const p = new URLSearchParams({ q: state.keywords, country: state.country });
+    if (state.city) p.set("city", state.city);
+    if (state.period !== DEFAULTS.period) p.set("period", state.period);
+    if (state.workType !== "any") p.set("work", state.workType);
+    if (!state.newest) p.set("newest", "0");
+    return location.origin + location.pathname + "?" + p.toString();
+  }
+
+  function fromUrl() {
+    const p = new URLSearchParams(location.search);
+    if (!p.has("q")) return;
+    state.keywords = p.get("q") || "";
+    if (COUNTRIES.some((c) => c.code === p.get("country"))) state.country = p.get("country");
+    state.city = p.get("city") || "";
+    if (["1h", "24h", "3d", "7d", "30d", "any"].includes(p.get("period"))) state.period = p.get("period");
+    if (["any", "remote", "hybrid", "onsite"].includes(p.get("work"))) state.workType = p.get("work");
+    state.newest = p.get("newest") !== "0";
+  }
+
+  function openAll() {
+    readForm();
+    if (!state.keywords) { $("keywords").focus(); return; }
+    const q = query();
+    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id));
+    remember(); save();
+    let blocked = 0;
+    sites.forEach((s) => {
+      const w = window.open(s.build(q), "_blank");
+      if (w) { try { w.opener = null; } catch (_) { /* cross-origin */ } } else blocked++;
+    });
+    if (blocked) {
+      setStatus(`Your browser blocked ${blocked} of ${sites.length} tabs. Allow pop-ups for yes-analytics.com (icon at the right of the address bar) and press the button again, or use the Open buttons.`, true);
+    } else {
+      setStatus(`Opened ${sites.length} site${sites.length === 1 ? "" : "s"}.`);
+    }
+  }
+
+  async function copyText(text, msg) {
+    try { await navigator.clipboard.writeText(text); setStatus(msg); }
+    catch (_) { window.prompt("Copy this:", text); }
+  }
+
+  function init() {
+    $("country").innerHTML = COUNTRIES.map((c) => `<option value="${c.code}">${esc(c.name)}</option>`).join("");
+    const saved = load();
+    state = { ...DEFAULTS, ...saved, selected: saved.selected || {}, history: saved.history || [] };
+    fromUrl();
+    fillForm();
+    if (STORE_URL) $("storeCta").innerHTML = `<a class="btn btn-primary" style="flex:none" href="${STORE_URL}" target="_blank" rel="noopener">Add to Chrome, it's free</a>`;
+
+    const onChange = () => { readForm(); updateClear(); renderSites(); save(); };
+    ["keywords", "city"].forEach((id) => $(id).addEventListener("input", onChange));
+    ["period", "workType", "newest"].forEach((id) => $(id).addEventListener("change", onChange));
+    $("country").addEventListener("change", () => { readForm(); renderCities(); renderSites(); save(); });
+    $("form").addEventListener("submit", (e) => { e.preventDefault(); openAll(); });
+    $("keywords").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); openAll(); } });
+
+    document.addEventListener("click", (e) => {
+      const clr = e.target.closest(".clear");
+      if (clr) { $(clr.dataset.for).value = ""; $(clr.dataset.for).focus(); onChange(); return; }
+      const use = e.target.closest("[data-use]");
+      if (use) { $("keywords").value = state.history[+use.dataset.use]; onChange(); return; }
+      const del = e.target.closest("[data-del]");
+      if (del) { state.history.splice(+del.dataset.del, 1); renderRecent(); save(); return; }
+      if (e.target.id === "clearRecent") { state.history = []; renderRecent(); save(); setStatus("Recent searches cleared."); return; }
+      const one = e.target.closest(".open-one[data-id]");
+      if (one) { readForm(); remember(); save(); }
+    });
+    $("sites").addEventListener("change", (e) => {
+      if (e.target.type !== "checkbox") return;
+      state.selected[state.country] = [...$("sites").querySelectorAll("input:checked")].map((i) => i.value);
+      renderSites(); save();
+    });
+    $("allSites").addEventListener("change", () => {
+      state.selected[state.country] = $("allSites").checked ? sitesForCountry(state.country).map((s) => s.id) : [];
+      renderSites(); save();
+    });
+    $("resetForm").addEventListener("click", () => {
+      Object.assign(state, { keywords: "", city: "", period: DEFAULTS.period, workType: "any", newest: true });
+      fillForm(); save(); $("keywords").focus();
+    });
+    $("openAll").addEventListener("click", openAll);
+    $("copyLinks").addEventListener("click", () => {
+      readForm();
+      if (!state.keywords) { $("keywords").focus(); return; }
+      const q = query();
+      const text = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => `${s.name}: ${s.build(q)}`).join("\n");
+      copyText(text, "Links copied.");
+    });
+    $("shareSearch").addEventListener("click", () => {
+      readForm();
+      if (!state.keywords) { $("keywords").focus(); return; }
+      copyText(shareUrl(), "Link to this search copied.");
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
