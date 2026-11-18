@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Search Launcher: free Chrome extension for job seekers | YeS Analytics</title>
+<meta name="description" content="Free Chrome extension that opens LinkedIn, Indeed, Glassdoor and local job boards with the same filters in one click, newest jobs first, grouped in one tab group.">
+<link rel="icon" href="/site-assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
+<link rel="canonical" href="https://yes-analytics.com/tools/job-search-extension/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Job Search Launcher: every job site in one click">
+<meta property="og:description" content="Search LinkedIn, Indeed, Glassdoor and local job boards at once, newest jobs first. Free Chrome extension, no sign-up, no data collected.">
+<meta property="og:url" content="https://yes-analytics.com/tools/job-search-extension/">
+<meta property="og:image" content="https://yes-analytics.com/tools/job-search-extension/assets/screenshot-1.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#050b18; --bg-deep:#020714; --bg-end:#0a1936; --surface:#0e1930; --border:#1c2c4a;
+    --text:#edf1f8; --text-muted:#8b96ac; --blue:#2f81fe; --blue-soft:#5ea1ff; --blue-dim:rgba(47,129,254,0.14);
+    --cyan:#5eead4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.65;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+    background:radial-gradient(ellipse 80% 55% at 70% 0%, var(--bg-end) 0%, var(--bg-deep) 62%);
+  }
+  a{color:var(--blue-soft); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  /* top bar */
+  .top{display:flex; align-items:center; justify-content:space-between; padding:22px 0;}
+  .top a.brand{color:var(--text); font-family:'Poppins',sans-serif; font-weight:700; font-size:1.05rem;}
+  .top a.back{font-size:0.9rem; color:var(--text-muted);}
+
+  /* hero */
+  .hero{padding:36px 0 28px; display:grid; grid-template-columns:1.05fr 1fr; gap:40px; align-items:center;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--cyan); display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--cyan);}
+  h1{font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.15; margin-bottom:16px;}
+  h1 .accent{color:var(--blue-soft);}
+  .lead{color:var(--text-muted); font-size:1.08rem; max-width:520px; margin-bottom:26px;}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; align-items:center;}
+  .btn{display:inline-block; padding:14px 22px; border-radius:10px; font-weight:600; font-size:1rem; border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s ease;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(47,129,254,0.32); text-decoration:none;}
+  .btn-primary.is-soon{background:var(--surface); border-color:var(--border); color:var(--text-muted); cursor:default; pointer-events:none;}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
+  .assure{margin-top:16px; font-size:0.86rem; color:var(--text-muted);}
+  .shot{border-radius:16px; border:1px solid var(--border); overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.45);}
+  .shot img{display:block; width:100%; height:auto;}
+
+  /* sections */
+  section{padding:46px 0 6px;}
+  h2{font-family:'Poppins',sans-serif; font-weight:700; font-size:1.55rem; line-height:1.25; margin-bottom:8px;}
+  .sub{color:var(--text-muted); margin-bottom:26px; max-width:620px;}
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px;}
+  .card h3{font-family:'Poppins',sans-serif; font-size:1.02rem; margin-bottom:6px;}
+  .card p{color:var(--text-muted); font-size:0.94rem;}
+  .shots{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:6px;}
+  .steps{counter-reset:s; display:grid; gap:12px; list-style:none;}
+  .steps li{counter-increment:s; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px 16px 58px; position:relative; color:#c9d2e3;}
+  .steps li::before{content:counter(s); position:absolute; left:16px; top:14px; width:28px; height:28px; border-radius:50%;
+    background:var(--blue-dim); border:1px solid var(--blue); color:#fff; display:grid; place-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem;}
+  a:not([href]){color:inherit; cursor:inherit; text-decoration:none;}
+  kbd{display:inline-block; padding:0 7px; border-radius:6px; border:1px solid var(--border); background:#091226;
+    font:500 0.88em 'JetBrains Mono',monospace; color:var(--cyan);}
+  code{font-family:'JetBrains Mono',monospace; font-size:0.88em; color:var(--cyan);}
+  .note{padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06); border:1px solid rgba(47,129,254,0.2);
+    color:var(--text-muted); font-size:0.94rem;}
+  .note strong{color:var(--text);}
+  details{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px;}
+  summary{cursor:pointer; font-weight:600; list-style:none;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'+'; float:right; color:var(--blue-soft);}
+  details[open] summary::after{content:'\2212';}
+  details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
+  footer{margin-top:60px; padding:24px 0 48px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; gap:28px; padding-top:20px;}
+    .cards{grid-template-columns:1fr;}
+    .shots{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){ .wrap{padding:0 16px;} .btn{width:100%; text-align:center;} .cta-row{flex-direction:column; align-items:stretch;} }
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(5,11,24,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(28,44,74,0.6);
+  }
+  .site-nav nav{
+    max-width:1160px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo-mark{display:flex; align-items:center;}
+  .logo-mark img{display:block; width:auto;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:0.9rem; color:var(--text-muted); transition:color .2s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    padding:9px 18px; border:1px solid var(--blue); border-radius:6px;
+    font-size:0.85rem; color:var(--blue-soft) !important; transition:all .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{background:var(--blue-dim); color:#fff !important;}
+
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
+
+  /* ---------- NAV DROPDOWN ---------- */
+  .nav-dropdown{position:relative;}
+  .nav-dropdown-toggle{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    font-size:0.9rem; color:var(--text-muted); font-family:'Inter', sans-serif; padding:0;
+    transition:color .2s ease;
+  }
+  .nav-dropdown-toggle:hover, .nav-dropdown-toggle:focus-visible, .nav-dropdown.open .nav-dropdown-toggle{color:var(--text);}
+  .nav-dropdown-toggle svg{width:12px; height:12px; stroke:currentColor; transition:transform .2s ease;}
+  .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg);}
+  .nav-dropdown-menu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-8px);
+    min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:8px; margin-top:14px; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:60;
+  }
+  .nav-dropdown-menu::before{
+    content:''; position:absolute; left:0; right:0; top:-14px; height:14px; background:transparent;
+    pointer-events:auto;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu{
+    opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:8px;
+    color:var(--text); font-size:0.88rem; transition:background .15s ease;
+  }
+  .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
+  .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  .nav-dropdown-menu .menu-group{display:block; padding:10px 12px 4px; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); font-weight:600;}
+  .nav-dropdown-menu .menu-group:not(:first-child){margin-top:4px; border-top:1px solid var(--border); padding-top:12px;}
+  @media (max-width:860px){ .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu{transform:none;} }
+  @media (max-width:860px){
+    .nav-dropdown-menu{
+      position:static; transform:none; box-shadow:none; border:none; background:transparent;
+      padding:4px 0 4px 14px; display:none; opacity:1; min-width:0;
+    }
+    .nav-dropdown.open .nav-dropdown-menu{display:flex; flex-direction:column;}
+    .nav-dropdown-toggle{width:100%; justify-content:space-between; padding:2px 0;}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none; position:fixed; top:64px; left:0; right:0; background:var(--bg-deep); flex-direction:column; align-items:flex-start; padding:24px 32px; border-bottom:1px solid var(--border); gap:20px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  .feedback{margin-top:40px; padding:26px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface); text-align:center;}
+  .feedback h2{margin:0 0 6px; font-size:1.15rem;}
+  .feedback > p{margin:0 auto 16px; color:var(--text-muted); font-size:0.92rem; max-width:560px;}
+  .feedback form{max-width:640px; margin:0 auto; text-align:left;}
+  .feedback textarea{width:100%; min-height:96px; resize:vertical; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback textarea:focus, .feedback input[type=email]:focus{border-color:var(--blue);}
+  .feedback .fbrow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .feedback input[type=email]{flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback button{flex:0 0 auto; padding:12px 22px; border-radius:10px; border:none; background:var(--blue); color:#fff; cursor:pointer; font:inherit; font-weight:600; font-size:0.95rem;}
+  .feedback button:disabled{opacity:.6; cursor:default;}
+  .feedback .fbmsg{margin-top:10px; min-height:1.3em; font-size:0.9rem; color:var(--cyan); text-align:center;}
+  .feedback .fbmsg.err{color:#f59e8b;}
+  .feedback .fbnote{margin-top:6px; font-size:0.78rem; color:var(--text-muted); text-align:center;}
+  .feedback .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .site-nav a:hover{text-decoration:none;}
+  .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
+  body{padding-top:68px;}
+</style>
+</head>
+<body>
+<header class="site-nav">
+  <nav>
+    <a href="/" class="logo-mark"><img src="/tools/lib/yes-logo.png" alt="YeS Analytics" height="40"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#directions">Directions</a>
+      <a href="/#work">Work</a>
+      <a href="/#about">About</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsDropdownToggle" aria-expanded="false">
+          Free tools
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <span class="menu-group">Web tools</span>
+          <a href="/tools/bold-text.html">
+            Bold text generator
+            <span class="tool-desc">Write posts with bold, italic and symbols</span>
+          </a>
+          <a href="/tools/job-search/">
+            Job search launcher
+            <span class="tool-desc">Search every job site at once, newest first</span>
+          </a>
+          <span class="menu-group">Chrome extensions</span>
+          <a href="/tools/bold-text-extension/">
+            Bold and Symbols for Posts
+            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
+          </a>
+          <a href="/tools/job-search-extension/" aria-current="page">
+            Job Search Launcher
+            <span class="tool-desc">Coming soon to the Chrome Web Store</span>
+          </a>
+        </div>
+      </div>
+      <a href="/#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Free Chrome extension</div>
+      <h1>Every job site, <span class="accent">newest jobs first</span></h1>
+      <p class="lead">Type a job title once and open LinkedIn, Indeed, Glassdoor and local job boards with the same filters, in one click. Results open in one tab group, sorted by most recent wherever the site allows.</p>
+      <div class="cta-row">
+        <a id="storeBtn" class="btn btn-primary is-soon" href="#" aria-disabled="true">Coming soon to the Chrome Web Store</a>
+        <a class="btn btn-ghost" href="/tools/job-search/">Try the web version</a>
+      </div>
+      <p class="assure">Free. No sign-up. No data collected.</p>
+    </div>
+    <div class="shot">
+      <img src="assets/screenshot-1.png" width="1280" height="800" alt="The extension popup with a search for Data Analyst in Dublin and nine job sites selected">
+    </div>
+  </header>
+
+  <section id="features">
+    <h2>What it does</h2>
+    <p class="sub">Less typing, fresher jobs, no tab chaos.</p>
+    <div class="cards">
+      <div class="card"><h3>One search, every site</h3><p>Enter the job title, country, city, how recent the jobs should be and the work type once. The extension builds the right search link for each site and opens them all in one click.</p></div>
+      <div class="card"><h3>Newest jobs first</h3><p>Sorts by most recent wherever the site allows, including LinkedIn's classic search. Posted within: last hour, 24 hours, 3 days, week or month. A small label shows when a site cannot apply a filter.</p></div>
+      <div class="card"><h3>Tidy and repeatable</h3><p>All results open in one tab group named after your search. Recent searches, up to 20 saved searches, job title and city suggestions, and a tab that fails to load is reloaded automatically.</p></div>
+    </div>
+    <div class="shots" style="margin-top:16px">
+      <div class="shot"><img src="assets/screenshot-2.png" width="1280" height="800" loading="lazy" alt="Newest jobs first: sorting and date filters on every site"></div>
+      <div class="shot"><img src="assets/screenshot-4.png" width="1280" height="800" loading="lazy" alt="All results open in one tab group"></div>
+    </div>
+  </section>
+
+  <section id="sites">
+    <h2>Which job sites</h2>
+    <p class="sub">Global sites for 13 countries, plus local job boards for Ireland, the UK and Ukraine.</p>
+    <div class="cards">
+      <div class="card"><h3>Global</h3><p>LinkedIn (13 countries), Indeed (12 countries) and Glassdoor (Ireland, UK, US).</p></div>
+      <div class="card"><h3>Ireland and the UK</h3><p>IrishJobs.ie, Jobs.ie, JobsIreland.ie, PublicJobs.ie, Recruit Ireland and Careerjet.ie. In the UK: Reed, Totaljobs and CV-Library.</p></div>
+      <div class="card"><h3>Ukraine</h3><p>Work.ua, Robota.ua, Djinni and DOU, with each site's own spelling of 18 Ukrainian cities, so a city filter just works.</p></div>
+    </div>
+    <p class="sub" style="margin-top:16px">Missing a site or a country? <a href="#feedback">Tell us</a>.</p>
+  </section>
+
+  <section id="install">
+    <h2>How to install and use it</h2>
+    <p class="sub">It takes about a minute.</p>
+    <ol class="steps">
+      <li>Open the <a id="storeLink">extension page in the Chrome Web Store</a> and click <b>Add to Chrome</b>.</li>
+      <li>Pin it so the icon is always visible. Click the puzzle icon in Chrome's toolbar, then the pin next to <b>Job Search Launcher</b>.</li>
+      <li>Click the icon, type a job title and pick a country. Add a city, how recent the jobs should be and a work type if you like.</li>
+      <li>Tick the sites you want and press <b>Open</b>. Every site opens in its own tab, grouped under the name of your search. Press <b>Save search</b> to reuse it later in one click.</li>
+    </ol>
+  </section>
+
+  <section id="good-to-know">
+    <div class="note"><strong>Good to know.</strong> The extension opens each site's own search page, as if you had filled in its search form yourself. Some sites cannot apply every filter from a link, for example a date filter. The label next to the site tells you which filter it will ignore. Some sites may ask you to confirm you are human the first time.</div>
+  </section>
+
+  <section id="faq">
+    <h2>Questions</h2>
+    <details><summary>Is it really free?</summary><p>Yes. There is no sign-up, no ads and no paid tier.</p></details>
+    <details><summary>Does it collect my data?</summary><p>No. Your searches stay in your own browser. The extension cannot read the pages you visit. It only notices whether its own tabs finished loading, so it can reload one that failed. Read the <a href="/tools/job-search/privacy.html">privacy policy</a>.</p></details>
+    <details><summary>How is it different from the web version?</summary><p>The <a href="/tools/job-search/">web version</a> has the same sites and filters and works on phones too. But a web page may open only one tab per click unless you allow pop-ups, and it cannot group tabs. The extension opens every site in one click, puts them in one tab group and reloads tabs that fail to load.</p></details>
+    <details><summary>Does it apply to jobs for me?</summary><p>No. It only opens the searches. You read the jobs and apply yourself, on each site, under your own account.</p></details>
+    <details><summary>Is it connected to LinkedIn or the other job sites?</summary><p>No. It is an independent free tool by <a href="https://yes-analytics.com/">YeS Analytics</a> and is not affiliated with or endorsed by any job site listed. Questions or ideas: <a href="mailto:info@yes-analytics.com">info@yes-analytics.com</a>.</p></details>
+  </section>
+
+  <section class="feedback" id="feedback">
+    <h2>Help improve this tool</h2>
+    <p>Missing a job site or a country? A link that opens the wrong search? An idea for the extension? Tell us. Every message is read.</p>
+    <form id="feedbackForm" novalidate>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="vh" for="fbText">Your suggestion or feedback</label>
+      <textarea id="fbText" name="message" maxlength="3000" placeholder="Your suggestion or feedback..." required></textarea>
+      <div class="fbrow">
+        <label class="vh" for="fbEmail">Your email (optional)</label>
+        <input id="fbEmail" type="email" name="email" maxlength="200" placeholder="Your email (optional)" autocomplete="email">
+        <button type="submit" id="fbSend">Send feedback</button>
+      </div>
+      <p class="fbmsg" id="fbMsg" role="status" aria-live="polite"></p>
+      <p class="fbnote">Only your message and email (if you add one) are sent to us, by email. Nothing else on this page is sent.</p>
+    </form>
+  </section>
+
+  <footer>
+    <span>&copy; <span id="year"></span> YeS Analytics</span>
+    <span><a href="/tools/job-search/privacy.html">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="/tools/job-search/">Web version</a></span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // After the extension is published, paste its Chrome Web Store link between the quotes.
+  // The UTM tags let the store dashboard show how many installs came from this page.
+  const STORE_URL = '';
+
+  if (STORE_URL) {
+    const btn = document.getElementById('storeBtn');
+    const link = document.getElementById('storeLink');
+    const url = STORE_URL + (STORE_URL.includes('?') ? '&' : '?') +
+      'utm_source=yes-analytics&utm_medium=website&utm_campaign=job_search_extension_page';
+    btn.href = url;
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    btn.textContent = 'Add to Chrome, it’s free';
+    btn.classList.remove('is-soon');
+    btn.removeAttribute('aria-disabled');
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+  }
+// Menu: mobile toggle and Free tools dropdown, same behaviour as the main page.
+(function () {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  const dd = document.getElementById('toolsDropdown');
+  const ddt = document.getElementById('toolsDropdownToggle');
+  ddt.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddt.setAttribute('aria-expanded', dd.classList.toggle('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+
+// Feedback form, sent through Formspree. Paste the form address between the quotes
+// (looks like https://formspree.io/f/abcdwxyz, it is not a secret). While it is empty,
+// the button opens an email instead.
+(function () {
+  const FEEDBACK_URL = 'https://formspree.io/f/xdeeengl';
+  const SUBJECT = 'Feedback: Job Search Launcher extension';
+  const form = document.getElementById('feedbackForm');
+  const msg = document.getElementById('fbMsg');
+  const btn = document.getElementById('fbSend');
+  function say(t, err) { msg.textContent = t; msg.className = 'fbmsg' + (err ? ' err' : ''); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('fbText').value.trim();
+    const email = document.getElementById('fbEmail').value.trim();
+    if (!text) { say('Please write a short message first.', true); return; }
+    if (form.elements.botcheck.checked) return;
+    if (!FEEDBACK_URL) {
+      const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
+      window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
+      return;
+    }
+    btn.disabled = true; say('Sending...');
+    try {
+      const res = await fetch(FEEDBACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: SUBJECT, message: text, email: email || undefined })
+      });
+      if (res.ok) { form.reset(); say('Thank you, your message was sent.'); }
+      else say('Could not send. Please email info@yes-analytics.com instead.', true);
+    } catch (err) {
+      say('Could not send. Please email info@yes-analytics.com instead.', true);
+    }
+    btn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
