@@ -381,6 +381,8 @@
     <h2>Questions</h2>
     <details><summary>Why does only one tab open?</summary>
       <p>A web page may open only one new tab per click. If your browser blocks the rest, the button changes to "Open next" and opens one more site with each click, and a short guide shows how to allow pop-ups in your browser so that next time all sites open at once. The Chrome extension has no such limit and also puts the sites in one tab group.</p></details>
+    <details><summary>Can the sites open in the background?</summary>
+      <p>Not from the Open button: browsers always switch to a tab that a web page opens. To open one site in the background, hold <kbd>Ctrl</kbd> (<kbd>Cmd</kbd> on a Mac) and click its Open button, or click it with the middle mouse button.</p></details>
     <details><summary>What do the yellow labels mean?</summary>
       <p>Some job sites can't apply every filter from a link. For example, Recruit Ireland has no date filter and Totaljobs' own date filter is currently broken. The label tells you which filter that site will ignore, so there are no surprises.</p></details>
     <details><summary>Do you store my searches?</summary>
@@ -674,15 +676,24 @@
     if (!state.keywords) { $("keywords").focus(); return; }
     const q = query();
     if (queue.length) {
-      const s = queue.shift();
-      const w = window.open(s.url, "_blank");
-      if (w) { try { w.opener = null; } catch (_) {} }
+      // Try every remaining site: if the visitor has just allowed pop-ups, they all open now.
+      // Otherwise the browser lets only the first one through, as before.
+      let openedNow = 0;
+      while (queue.length) {
+        const w = window.open(queue[0].url, "_blank");
+        if (!w) break;
+        try { w.opener = null; } catch (_) {}
+        queue.shift(); openedNow++;
+      }
       const total = queueTotal;
       if (queue.length) {
         setOpenLabels(stepLabel(), true); markProgress();
         $("popupHelpTitle").textContent = `Opened ${total - queue.length} of ${total} sites.`;
         setStatus("");
-      } else { renderSites(); setStatus(`All ${total} sites opened.`); }
+      } else {
+        if (openedNow > 1) setPopupsOk(true);
+        renderSites(); setStatus(`All ${total} sites opened.`);
+      }
       return;
     }
     const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => ({ id: s.id, name: s.name, url: s.build(q) }));
