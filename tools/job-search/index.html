@@ -673,9 +673,6 @@
     if (w) { try { w.opener = null; } catch (_) { /* cross-origin */ } }
     return !!w;
   }
-  // The browser activates the last tab a page opens. Targeting the first tab by its name
-  // (empty URL, so it is not reloaded) switches to it instead.
-  function focusFirst() { try { window.open("", `yesjob_${runId}_0`); } catch (_) {} }
 
   function resetQueue() {
     queue = []; queueTotal = 0; queueSites = new Set();
@@ -686,52 +683,61 @@
     readForm();
     if (!state.keywords) { $("keywords").focus(); return; }
     const q = query();
-    if (queue.length) {
-      const total = queueTotal;
-      const openOne = (url) => { const w = window.open(url, "_blank"); if (w) { try { w.opener = null; } catch (_) {} } return !!w; };
-      // One new tab per click is always allowed. Open it blank first, then test whether
-      // a second tab is allowed too (the visitor may have just allowed pop-ups).
-      const probe = window.open("", "_blank");
-      const all = sitesForCountry(state.country).filter((x) => queueSites.has(x.id)).map((x) => ({ id: x.id, name: x.name, url: x.build(q) }));
-      runId = Date.now();
-      if (all.length && openNamed(all[0].url, 0)) {
-        // Pop-ups are allowed: drop the blank tab and open the whole search in its usual order.
-        try { probe && probe.close(); } catch (_) {}
-        all.slice(1).forEach((x, i) => openNamed(x.url, i + 1));
-        if (all.length > 1) focusFirst();
-        setPopupsOk(true);
-        renderSites();
-        setStatus(`Pop-ups allowed. All ${total} sites opened.`);
-        return;
-      }
-      // Still blocked: load the next site into the blank tab.
-      const next = queue.shift();
-      if (probe) { try { probe.location.href = next.url; probe.opener = null; } catch (_) { openOne(next.url); } }
-      else openOne(next.url);
-      if (queue.length) {
-        setOpenLabels(stepLabel(), true); markProgress();
-        $("popupHelpTitle").textContent = `Opened ${total - queue.length} of ${total} sites.`;
-        setStatus("");
-      } else {
-        renderSites(); setStatus(`All ${total} sites opened.`);
-      }
+    const stepping = queue.length > 0;
+    // While stepping, a click that finds pop-ups allowed reopens the whole search.
+    const list = sitesForCountry(state.country)
+      .filter((x) => (stepping ? queueSites.has(x.id) : selectedIds().includes(x.id)))
+      .map((x) => ({ id: x.id, name: x.name, url: x.build(q) }));
+    if (!list.length) return;
+    if (!stepping) { remember(); save(); }
+    const total = stepping ? queueTotal : list.length;
+
+    // One new tab per click is always allowed. It opens blank first and gets the
+    // first site at the very end, so the first site sits in the first tab.
+    runId = Date.now();
+    const firstName = `yesjob_${runId}_0`;
+    const first = window.open("", firstName);
+    const load = (w, url) => {
+      if (!w) return openNamed(url, 99);
+      try { w.location.href = url; } catch (_) { return openNamed(url, 99); }
+      try { w.opener = null; } catch (_) {}
+      return true;
+    };
+
+    // Test whether a second tab is allowed (pop-ups enabled).
+    if (list.length > 1 && openNamed(list[1].url, 1)) {
+      list.slice(2).forEach((x, i) => openNamed(x.url, i + 2));
+      // Load the first site into the first tab by name, as the last action: this also
+      // asks the browser to switch to that tab instead of the last one.
+      const w = window.open(list[0].url, firstName);
+      if (w) { try { w.opener = null; } catch (_) {} } else load(first, list[0].url);
+      setPopupsOk(true);
+      if (stepping) { renderSites(); setStatus(`Pop-ups allowed. All ${total} sites opened.`); }
+      else { setHints(true); setStatus(`Opened ${total} sites.`); }
       return;
     }
-    const sites = sitesForCountry(state.country).filter((s) => selectedIds().includes(s.id)).map((s) => ({ id: s.id, name: s.name, url: s.build(q) }));
-    remember(); save();
-    const blocked = [];
-    runId = Date.now();
-    sites.forEach((s, i) => { if (!openNamed(s.url, i)) blocked.push(s); });
-    if (blocked.length) {
-      queue = blocked; queueTotal = sites.length; queueSites = new Set(sites.map((x) => x.id));
+
+    if (list.length === 1) { load(first, list[0].url); setStatus("Opened 1 site."); return; }
+
+    // Pop-ups are blocked: the blank tab gets the next site, one site per click.
+    if (!stepping) {
+      load(first, list[0].url);
+      queue = list.slice(1); queueTotal = list.length; queueSites = new Set(list.map((x) => x.id));
       setPopupsOk(false);
       setOpenLabels(stepLabel(), true); markProgress();
       placePopupHelp(typeof fromId === "string" ? fromId : "openAll");
-      showPopupHelp(sites.length - blocked.length, sites.length);
+      showPopupHelp(1, list.length);
+      setStatus("");
+      return;
+    }
+    const next = queue.shift();
+    load(first, next.url);
+    if (queue.length) {
+      setOpenLabels(stepLabel(), true); markProgress();
+      $("popupHelpTitle").textContent = `Opened ${total - queue.length} of ${total} sites.`;
       setStatus("");
     } else {
-      if (sites.length > 1) { setPopupsOk(true); setHints(true); focusFirst(); }
-      setStatus(`Opened ${sites.length} site${sites.length === 1 ? "" : "s"}.`);
+      renderSites(); setStatus(`All ${total} sites opened.`);
     }
   }
 
