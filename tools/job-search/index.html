@@ -657,7 +657,6 @@
     });
   }
   let queueSites = new Set();
-  let queueOpened = [];
 
   function stepLabel() {
     const next = queue[0];
@@ -668,7 +667,7 @@
     ["openAll", "openAllTop"].forEach((id) => { $(id).textContent = text; $(id).classList.toggle("stepping", !!stepping); });
   }
   function resetQueue() {
-    queue = []; queueTotal = 0; queueSites = new Set(); queueOpened = [];
+    queue = []; queueTotal = 0; queueSites = new Set();
     if ($("popupHelp")) hidePopupHelp();
   }
 
@@ -678,21 +677,24 @@
     const q = query();
     if (queue.length) {
       const total = queueTotal;
-      const openOne = (site) => { const w = window.open(site.url, "_blank"); if (w) { try { w.opener = null; } catch (_) {} } return !!w; };
-      // One tab per click is always allowed: open the next site.
-      const next = queue.shift();
-      openOne(next);
-      // Then check whether pop-ups are allowed now. If they are, open the whole
-      // search again: the rest of the list plus the sites opened earlier, so all of them open.
-      const rest = [...queue, ...queueOpened];
-      queueOpened.push(next);
-      if (rest.length && openOne(rest[0])) {
-        rest.slice(1).forEach(openOne);
+      const openOne = (url) => { const w = window.open(url, "_blank"); if (w) { try { w.opener = null; } catch (_) {} } return !!w; };
+      // One new tab per click is always allowed. Open it blank first, then test whether
+      // a second tab is allowed too (the visitor may have just allowed pop-ups).
+      const probe = window.open("", "_blank");
+      const all = sitesForCountry(state.country).filter((x) => queueSites.has(x.id)).map((x) => ({ id: x.id, name: x.name, url: x.build(q) }));
+      if (all.length && openOne(all[0].url)) {
+        // Pop-ups are allowed: drop the blank tab and open the whole search in its usual order.
+        try { probe && probe.close(); } catch (_) {}
+        all.slice(1).forEach((x) => openOne(x.url));
         setPopupsOk(true);
         renderSites();
         setStatus(`Pop-ups allowed. All ${total} sites opened.`);
         return;
       }
+      // Still blocked: load the next site into the blank tab.
+      const next = queue.shift();
+      if (probe) { try { probe.location.href = next.url; probe.opener = null; } catch (_) { openOne(next.url); } }
+      else openOne(next.url);
       if (queue.length) {
         setOpenLabels(stepLabel(), true); markProgress();
         $("popupHelpTitle").textContent = `Opened ${total - queue.length} of ${total} sites.`;
@@ -711,7 +713,6 @@
     });
     if (blocked.length) {
       queue = blocked; queueTotal = sites.length; queueSites = new Set(sites.map((x) => x.id));
-      queueOpened = sites.filter((x) => !blocked.includes(x));
       setPopupsOk(false);
       setOpenLabels(stepLabel(), true); markProgress();
       placePopupHelp(typeof fromId === "string" ? fromId : "openAll");
