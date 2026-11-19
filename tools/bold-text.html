@@ -3,14 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free LinkedIn Bold Text Editor, Italic and Symbols | YeS Analytics</title>
-<meta name="description" content="Write your LinkedIn post and make words bold, italic, underlined or struck through. Add lists, bullets and arrows, then copy it into LinkedIn. Free, nothing is sent anywhere. By YeS Analytics.">
+<title>LinkedIn Bold Text Generator: Bold, Italic and Symbols | YeS Analytics</title>
+<meta name="description" content="Free LinkedIn bold text generator. Make words bold, italic or underlined, add bullets and arrows, then copy the post into LinkedIn. Works in your browser, nothing is sent anywhere.">
 <link rel="icon" href="/site-assets/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
 <link rel="canonical" href="https://yes-analytics.com/tools/bold-text.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "LinkedIn Bold Text Generator",
+      "url": "https://yes-analytics.com/tools/bold-text.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "YeS Analytics",
+        "url": "https://yes-analytics.com/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does LinkedIn have a bold or italic button?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LinkedIn's post box has no bold or italic button. This generator replaces ordinary letters with bold and italic Unicode characters, which show as styled text once pasted into LinkedIn."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the LinkedIn bold text generator free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. It is free to use, with no sign-up."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my text sent anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Nothing you type in the editor leaves your browser. Only the feedback form sends a message, and only when you submit it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where else can I use the bold text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The same text also works on X, Facebook, Instagram and WhatsApp."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does bold text affect LinkedIn search or screen readers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can. The styles are separate Unicode characters, not real formatting. Screen readers often can't read them properly, and LinkedIn's search doesn't recognise them as normal keywords. Use them sparingly, for example for a headline or one key phrase."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does some text show as empty boxes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The styled letters are regular Unicode characters. A few fonts or older devices do not include them, so a reader may see boxes instead of letters. This is rare on modern devices."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Free LinkedIn Bold Text Editor, Italic and Symbols">
+<meta property="og:title" content="LinkedIn Bold Text Generator: Bold, Italic and Symbols">
 <meta property="og:description" content="Write your post, select a word, click Bold. Lists, bullets and arrows too. Free, nothing is sent anywhere.">
 <meta property="og:url" content="https://yes-analytics.com/tools/bold-text.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -213,6 +290,14 @@
   header a:hover{text-decoration:none;}
   .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
   body{padding-top:68px;}
+  .steps{margin:8px 0 0 22px; color:var(--text-muted);}
+  .steps li{margin-bottom:6px;}
+  .faq details{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px;}
+  .faq summary{cursor:pointer; font-weight:600; list-style:none;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:'+'; float:right; color:var(--blue-soft);}
+  .faq details[open] summary::after{content:'\2212';}
+  .faq details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
 </style>
 </head>
 <body>
@@ -256,7 +341,7 @@
 </header>
 <div class="wrap">
   <div class="eyebrow">Free tool</div>
-  <h1>Write your post with <span class="accent"><strong>bold</strong>, <em>italic</em></span> and symbols</h1>
+  <h1>LinkedIn <span class="accent"><strong>bold text</strong></span> generator, with <em>italic</em> and symbols</h1>
   <p class="lead">LinkedIn's post box has no <strong>bold</strong> or <em>italic</em> button. Write your post here, select a word, click a style, then copy everything into LinkedIn. The same text also works on X, Facebook, Instagram and WhatsApp. Nothing you type leaves your browser.</p>
 
   <div class="extbar"><span>Want these buttons right inside LinkedIn, X and other sites? Try the <strong>free Chrome extension</strong>.</span><a class="go" id="extBarLink" href="/tools/bold-text-extension/">Get the extension</a></div>
@@ -336,6 +421,25 @@
       <div class="exrow"><span class="exk">After clicking Bold</span><span id="exStyled" aria-hidden="true"></span><span class="vh">the same sentence written with bold Unicode characters</span></div>
     </div>
   </div>
+
+  <section class="howto" id="how-to">
+    <h2>How to make text bold on LinkedIn</h2>
+    <ol class="steps">
+      <li>Write your post in the box above, or paste it in.</li>
+      <li>Select a word or a few lines, then click <strong>B</strong> for bold or <em>I</em> for italic. <kbd>Ctrl</kbd>+<kbd>B</kbd> and <kbd>Ctrl</kbd>+<kbd>I</kbd> work too.</li>
+      <li>Click <strong>Copy post to clipboard</strong> and paste the text into the LinkedIn post box.</li>
+    </ol>
+  </section>
+
+  <section class="faq" id="questions">
+    <h2>Questions</h2>
+    <details><summary>Does LinkedIn have a bold or italic button?</summary><p>No. LinkedIn's post box has no bold or italic button. This generator replaces ordinary letters with bold and italic Unicode characters, which show as styled text once pasted into LinkedIn.</p></details>
+    <details><summary>Is the LinkedIn bold text generator free?</summary><p>Yes. It is free to use, with no sign-up.</p></details>
+    <details><summary>Is my text sent anywhere?</summary><p>No. Nothing you type in the editor leaves your browser. Only the feedback form sends a message, and only when you submit it.</p></details>
+    <details><summary>Where else can I use the bold text?</summary><p>The same text also works on X, Facebook, Instagram and WhatsApp.</p></details>
+    <details><summary>Does bold text affect LinkedIn search or screen readers?</summary><p>It can. The styles are separate Unicode characters, not real formatting. Screen readers often can't read them properly, and LinkedIn's search doesn't recognise them as normal keywords. Use them sparingly, for example for a headline or one key phrase.</p></details>
+    <details><summary>Why does some text show as empty boxes?</summary><p>The styled letters are regular Unicode characters. A few fonts or older devices do not include them, so a reader may see boxes instead of letters. This is rare on modern devices.</p></details>
+  </section>
 
   <section class="feedback" id="feedback">
     <h2>Help improve this tool</h2>
