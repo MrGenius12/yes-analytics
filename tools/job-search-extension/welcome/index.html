@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Job Search Launcher | YeS Analytics</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Free Chrome extension that opens LinkedIn, Indeed, Glassdoor and local job boards with the same filters in one click, newest jobs first, grouped in one tab group.">
+<link rel="icon" href="/site-assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/site-assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/site-assets/favicon-180.png">
+<link rel="canonical" href="https://yes-analytics.com/tools/job-search-extension/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Job Search Launcher: every job site in one click">
+<meta property="og:description" content="Search LinkedIn, Indeed, Glassdoor and local job boards at once, newest jobs first. Free Chrome extension, no sign-up, no data collected.">
+<meta property="og:url" content="https://yes-analytics.com/tools/job-search-extension/">
+<meta property="og:image" content="https://yes-analytics.com/tools/job-search-extension/assets/screenshot-1.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#050b18; --bg-deep:#020714; --bg-end:#0a1936; --surface:#0e1930; --border:#1c2c4a;
+    --text:#edf1f8; --text-muted:#8b96ac; --blue:#2f81fe; --blue-soft:#5ea1ff; --blue-dim:rgba(47,129,254,0.14);
+    --cyan:#5eead4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    color:var(--text); font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.65;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+    background:radial-gradient(ellipse 80% 55% at 70% 0%, var(--bg-end) 0%, var(--bg-deep) 62%);
+  }
+  a{color:var(--blue-soft); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  /* top bar */
+  .top{display:flex; align-items:center; justify-content:space-between; padding:22px 0;}
+  .top a.brand{color:var(--text); font-family:'Poppins',sans-serif; font-weight:700; font-size:1.05rem;}
+  .top a.back{font-size:0.9rem; color:var(--text-muted);}
+
+  /* hero */
+  .hero{padding:36px 0 28px; display:grid; grid-template-columns:1.05fr 1fr; gap:40px; align-items:center;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--cyan); display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--cyan);}
+  h1{font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.15; margin-bottom:16px;}
+  h1 .accent{color:var(--blue-soft);}
+  .lead{color:var(--text-muted); font-size:1.08rem; max-width:520px; margin-bottom:26px;}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; align-items:center;}
+  .btn{display:inline-block; padding:14px 22px; border-radius:10px; font-weight:600; font-size:1rem; border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s ease;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 10px 24px rgba(47,129,254,0.32); text-decoration:none;}
+  .btn-primary.is-soon{background:var(--surface); border-color:var(--border); color:var(--text-muted); cursor:default; pointer-events:none;}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{background:var(--blue-dim); text-decoration:none;}
+  .assure{margin-top:16px; font-size:0.86rem; color:var(--text-muted);}
+  .shot{border-radius:16px; border:1px solid var(--border); overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.45);}
+  .shot img{display:block; width:100%; height:auto;}
+
+  /* sections */
+  section{padding:46px 0 6px;}
+  h2{font-family:'Poppins',sans-serif; font-weight:700; font-size:1.55rem; line-height:1.25; margin-bottom:8px;}
+  .sub{color:var(--text-muted); margin-bottom:26px; max-width:620px;}
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:22px;}
+  .card h3{font-family:'Poppins',sans-serif; font-size:1.02rem; margin-bottom:6px;}
+  .card p{color:var(--text-muted); font-size:0.94rem;}
+  .shots{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:6px;}
+  .steps{counter-reset:s; display:grid; gap:12px; list-style:none;}
+  .steps li{counter-increment:s; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px 16px 58px; position:relative; color:#c9d2e3;}
+  .steps li::before{content:counter(s); position:absolute; left:16px; top:14px; width:28px; height:28px; border-radius:50%;
+    background:var(--blue-dim); border:1px solid var(--blue); color:#fff; display:grid; place-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:0.85rem;}
+  a:not([href]){color:inherit; cursor:inherit; text-decoration:none;}
+  kbd{display:inline-block; padding:0 7px; border-radius:6px; border:1px solid var(--border); background:#091226;
+    font:500 0.88em 'JetBrains Mono',monospace; color:var(--cyan);}
+  code{font-family:'JetBrains Mono',monospace; font-size:0.88em; color:var(--cyan);}
+  .note{padding:18px 20px; border-radius:12px; background:rgba(47,129,254,0.06); border:1px solid rgba(47,129,254,0.2);
+    color:var(--text-muted); font-size:0.94rem;}
+  .note strong{color:var(--text);}
+  details{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px;}
+  summary{cursor:pointer; font-weight:600; list-style:none;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:'+'; float:right; color:var(--blue-soft);}
+  details[open] summary::after{content:'\2212';}
+  details p{margin-top:10px; color:var(--text-muted); font-size:0.95rem;}
+  footer{margin-top:60px; padding:24px 0 48px; border-top:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; gap:28px; padding-top:20px;}
+    .cards{grid-template-columns:1fr;}
+    .shots{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){ .wrap{padding:0 16px;} .btn{width:100%; text-align:center;} .cta-row{flex-direction:column; align-items:stretch;} }
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(5,11,24,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(28,44,74,0.6);
+  }
+  .site-nav nav{
+    max-width:1160px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo-mark{display:flex; align-items:center;}
+  .logo-mark img{display:block; width:auto;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-links a{
+    font-size:0.9rem; color:var(--text-muted); transition:color .2s ease;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    padding:9px 18px; border:1px solid var(--blue); border-radius:6px;
+    font-size:0.85rem; color:var(--blue-soft) !important; transition:all .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{background:var(--blue-dim); color:#fff !important;}
+
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
+
+  /* ---------- NAV DROPDOWN ---------- */
+  .nav-dropdown{position:relative;}
+  .nav-dropdown-toggle{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    font-size:0.9rem; color:var(--text-muted); font-family:'Inter', sans-serif; padding:0;
+    transition:color .2s ease;
+  }
+  .nav-dropdown-toggle:hover, .nav-dropdown-toggle:focus-visible, .nav-dropdown.open .nav-dropdown-toggle{color:var(--text);}
+  .nav-dropdown-toggle svg{width:12px; height:12px; stroke:currentColor; transition:transform .2s ease;}
+  .nav-dropdown.open .nav-dropdown-toggle svg{transform:rotate(180deg);}
+  .nav-dropdown-menu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-8px);
+    min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:8px; margin-top:14px; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:60;
+  }
+  .nav-dropdown-menu::before{
+    content:''; position:absolute; left:0; right:0; top:-14px; height:14px; background:transparent;
+    pointer-events:auto;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu{
+    opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:8px;
+    color:var(--text); font-size:0.88rem; transition:background .15s ease;
+  }
+  .nav-dropdown-menu a:hover, .nav-dropdown-menu a:focus-visible{background:var(--blue-dim);}
+  .nav-dropdown-menu a span.tool-desc{font-size:0.76rem; color:var(--text-muted); font-weight:400;}
+  .nav-dropdown-menu .menu-group{display:block; padding:10px 12px 4px; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); font-weight:600;}
+  .nav-dropdown-menu .menu-group:not(:first-child){margin-top:4px; border-top:1px solid var(--border); padding-top:12px;}
+  @media (max-width:860px){ .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu{transform:none;} }
+  @media (max-width:860px){
+    .nav-dropdown-menu{
+      position:static; transform:none; box-shadow:none; border:none; background:transparent;
+      padding:4px 0 4px 14px; display:none; opacity:1; min-width:0;
+    }
+    .nav-dropdown.open .nav-dropdown-menu{display:flex; flex-direction:column;}
+    .nav-dropdown-toggle{width:100%; justify-content:space-between; padding:2px 0;}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none; position:fixed; top:64px; left:0; right:0; background:var(--bg-deep); flex-direction:column; align-items:flex-start; padding:24px 32px; border-bottom:1px solid var(--border); gap:20px;}
+    .nav-links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  .feedback{margin-top:40px; padding:26px 24px; border-radius:14px; border:1px solid var(--border); background:var(--surface); text-align:center;}
+  .feedback h2{margin:0 0 6px; font-size:1.15rem;}
+  .feedback > p{margin:0 auto 16px; color:var(--text-muted); font-size:0.92rem; max-width:560px;}
+  .feedback form{max-width:640px; margin:0 auto; text-align:left;}
+  .feedback textarea{width:100%; min-height:96px; resize:vertical; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback textarea:focus, .feedback input[type=email]:focus{border-color:var(--blue);}
+  .feedback .fbrow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .feedback input[type=email]{flex:1 1 240px; min-width:0; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg-deep); color:var(--text); font:inherit; font-size:0.95rem; outline:none;}
+  .feedback button{flex:0 0 auto; padding:12px 22px; border-radius:10px; border:none; background:var(--blue); color:#fff; cursor:pointer; font:inherit; font-weight:600; font-size:0.95rem;}
+  .feedback button:disabled{opacity:.6; cursor:default;}
+  .feedback .fbmsg{margin-top:10px; min-height:1.3em; font-size:0.9rem; color:var(--cyan); text-align:center;}
+  .feedback .fbmsg.err{color:#f59e8b;}
+  .feedback .fbnote{margin-top:6px; font-size:0.78rem; color:var(--text-muted); text-align:center;}
+  .feedback .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  .vh{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .site-nav a:hover{text-decoration:none;}
+  .nav-dropdown-menu a[aria-current="page"]{background:var(--blue-dim);}
+  body{padding-top:68px;}
+  .welcome{grid-template-columns:1.2fr 1fr;}
+  .pinbox{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow:0 30px 60px rgba(0,0,0,0.35);}
+  .pinbox .bar{display:flex; align-items:center; gap:10px; padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:10px;}
+  .pinbox .omni{flex:1; height:26px; border-radius:13px; background:rgba(255,255,255,0.07);}
+  .pinbox .ico{width:30px; height:30px; border-radius:50%; display:grid; place-items:center;}
+  .pinbox .puzzle{background:var(--blue-dim); outline:2px solid var(--blue-soft);}
+  .pinbox .puzzle svg{width:18px; height:18px; fill:var(--text);}
+  .pinbox .you{background:rgba(255,255,255,0.12);}
+  .pinbox .menu{margin:10px 0 0 auto; width:88%; background:#fff; color:#1d2330; border-radius:12px; padding:12px 14px; font-size:.95rem;}
+  .pinbox .mtitle{font-weight:600; margin-bottom:8px;}
+  .pinbox .mrow{display:flex; align-items:center; gap:10px; padding:8px; border-radius:8px; background:#eef4ff;}
+  .pinbox .mrow img{width:22px; height:22px;}
+  .pinbox .pin{margin-left:auto; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:#d6e6ff;}
+  .pinbox .pin svg{width:17px; height:17px; fill:#1a5fd0;}
+  .pinbox .hint{text-align:right; font-size:.82rem; color:#1a5fd0; margin-top:6px; font-weight:600;}
+  #more{padding-top:8px;}
+  @media (max-width:860px){ .welcome{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<header class="site-nav">
+  <nav>
+    <a href="/" class="logo-mark"><img src="/tools/lib/yes-logo.png" alt="YeS Analytics" height="40"></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/#directions">Directions</a>
+      <a href="/#work">Work</a>
+      <a href="/#about">About</a>
+      <div class="nav-dropdown" id="toolsDropdown">
+        <button class="nav-dropdown-toggle" id="toolsDropdownToggle" aria-expanded="false">
+          Free tools
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <span class="menu-group">Web tools</span>
+          <a href="/tools/bold-text.html">
+            Bold text generator
+            <span class="tool-desc">Write posts with bold, italic and symbols</span>
+          </a>
+          <a href="/tools/job-search/">
+            Job search launcher
+            <span class="tool-desc">Search every job site at once, newest first</span>
+          </a>
+          <span class="menu-group">Chrome extensions</span>
+          <a href="/tools/bold-text-extension/">
+            Bold and Symbols for Posts
+            <span class="tool-desc">Bold, italic and symbols on LinkedIn, X and any site</span>
+          </a>
+          <a href="/tools/job-search-extension/">
+            Job Search Launcher
+            <span class="tool-desc">Every job site in one click, from your toolbar</span>
+          </a>
+        </div>
+      </div>
+      <a href="/#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+<div class="wrap">
+  <header class="hero welcome">
+    <div>
+      <div class="eyebrow">Installed</div>
+      <h1>You’re all set. <span class="accent">Let’s find your next job.</span></h1>
+      <p class="lead">Job Search Launcher is now in your browser. Three quick steps and you’re searching every job site at once.</p>
+    </div>
+    <div class="pinbox" aria-hidden="true">
+      <div class="bar">
+        <span class="omni"></span>
+        <span class="ico puzzle"><svg viewBox="0 0 24 24"><path d="M10 3a2 2 0 0 1 4 0v2h4a1 1 0 0 1 1 1v4h-2a2 2 0 0 0 0 4h2v4a1 1 0 0 1-1 1h-4v-2a2 2 0 0 0-4 0v2H6a1 1 0 0 1-1-1v-4h2a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z"/></svg></span>
+        <span class="ico you"></span>
+      </div>
+      <div class="menu">
+        <div class="mtitle">Extensions</div>
+        <div class="mrow"><img src="../assets/icon.png" alt=""> Job Search Launcher <span class="pin"><svg viewBox="0 0 24 24"><path d="M14 3l7 7-3 1-4 4 1 4-2 2-4-4-5 5-1-1 5-5-4-4 2-2 4 1 4-4z"/></svg></span></div>
+        <div class="hint">Click the pin</div>
+      </div>
+    </div>
+  </header>
+
+  <section id="start">
+    <ol class="steps">
+      <li><b>Pin the icon.</b> Click the puzzle icon in Chrome’s toolbar, top right, then the pin next to <b>Job Search Launcher</b>. The icon stays visible next to the address bar.</li>
+      <li><b>Run your first search.</b> Click the icon, type a job title and pick a country. Add a city, how recent the jobs should be and a work type if you like. Press <b>Open</b>, and every site opens in one tab group, newest jobs first.</li>
+      <li><b>Save it for tomorrow.</b> Press <b>Save search</b> and next time it’s one click. Your recent searches are kept too.</li>
+    </ol>
+  </section>
+
+  <section id="good-to-know">
+    <div class="note"><strong>Good to know.</strong> Some sites can’t apply every filter from a link. The small label next to a site tells you which filter it will ignore. A site may ask you to confirm you are human the first time, that’s normal.</div>
+  </section>
+
+  <section id="more">
+    <div class="cta-row">
+      <a class="btn btn-primary" id="reviewBtn" href="https://chromewebstore.google.com/detail/jpaekmffiijbkdleifijnibbignemhkd/reviews" target="_blank" rel="noopener">Like it? Leave a review</a>
+      <a class="btn btn-ghost" href="/tools/job-search/">Web version for your phone</a>
+    </div>
+  </section>
+
+  <section class="feedback" id="feedback">
+    <h2>Help improve this tool</h2>
+    <p>Missing a job site or a country? A link that opens the wrong search? An idea for the extension? Tell us. Every message is read.</p>
+    <form id="feedbackForm" novalidate>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="vh" for="fbText">Your suggestion or feedback</label>
+      <textarea id="fbText" name="message" maxlength="3000" placeholder="Your suggestion or feedback..." required></textarea>
+      <div class="fbrow">
+        <label class="vh" for="fbEmail">Your email (optional)</label>
+        <input id="fbEmail" type="email" name="email" maxlength="200" placeholder="Your email (optional)" autocomplete="email">
+        <button type="submit" id="fbSend">Send feedback</button>
+      </div>
+      <p class="fbmsg" id="fbMsg" role="status" aria-live="polite"></p>
+      <p class="fbnote">Only your message and email (if you add one) are sent to us, by email. Nothing else on this page is sent.</p>
+    </form>
+  </section>
+
+  <footer>
+    <span>&copy; <span id="year"></span> YeS Analytics</span>
+    <span><a href="/tools/job-search/privacy.html">Privacy policy</a> &nbsp;&middot;&nbsp; <a href="/tools/job-search/">Web version</a></span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+// Menu: mobile toggle and Free tools dropdown, same behaviour as the main page.
+(function () {
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  const dd = document.getElementById('toolsDropdown');
+  const ddt = document.getElementById('toolsDropdownToggle');
+  ddt.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ddt.setAttribute('aria-expanded', dd.classList.toggle('open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) { dd.classList.remove('open'); ddt.setAttribute('aria-expanded', false); }
+  });
+})();
+
+// Feedback form, sent through Formspree. Paste the form address between the quotes
+// (looks like https://formspree.io/f/abcdwxyz, it is not a secret). While it is empty,
+// the button opens an email instead.
+(function () {
+  const FEEDBACK_URL = 'https://formspree.io/f/xdeeengl';
+  const SUBJECT = 'Feedback: Job Search Launcher (welcome page)';
+  const form = document.getElementById('feedbackForm');
+  const msg = document.getElementById('fbMsg');
+  const btn = document.getElementById('fbSend');
+  function say(t, err) { msg.textContent = t; msg.className = 'fbmsg' + (err ? ' err' : ''); }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('fbText').value.trim();
+    const email = document.getElementById('fbEmail').value.trim();
+    if (!text) { say('Please write a short message first.', true); return; }
+    if (form.elements.botcheck.checked) return;
+    if (!FEEDBACK_URL) {
+      const body = encodeURIComponent(text + (email ? '\n\nReply to: ' + email : ''));
+      window.location.href = 'mailto:info@yes-analytics.com?subject=' + encodeURIComponent(SUBJECT) + '&body=' + body;
+      return;
+    }
+    btn.disabled = true; say('Sending...');
+    try {
+      const res = await fetch(FEEDBACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: SUBJECT, message: text, email: email || undefined })
+      });
+      if (res.ok) { form.reset(); say('Thank you, your message was sent.'); }
+      else say('Could not send. Please email info@yes-analytics.com instead.', true);
+    } catch (err) {
+      say('Could not send. Please email info@yes-analytics.com instead.', true);
+    }
+    btn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
