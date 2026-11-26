@@ -142,6 +142,11 @@
     font:inherit; font-weight:600; font-size:0.95rem;}
   .paste-btn:hover{background:var(--blue);}
   textarea:focus{border-color:var(--blue);}
+  .fontsrow{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:10px;}
+  .fontslbl{font-size:0.8rem; color:var(--text-muted); margin-right:4px;}
+  .tb.font{font-size:0.8rem; height:34px; padding:0 9px;}
+  .lim{background:var(--bg-deep); color:var(--text); border:1px solid var(--border); border-radius:6px; font:inherit; font-size:0.8rem; padding:3px 6px; margin-left:8px;}
+  .count-over{color:#f87171; font-weight:600;} .count-near{color:#fbbf24;}
   .meta{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:10px; font-size:0.85rem; color:var(--text-muted);}
   .meta .msg{color:var(--cyan); min-height:1.2em;}
   .hint{margin-top:6px; font-size:0.82rem; color:var(--text-muted);}
@@ -369,6 +374,7 @@
         <button class="tb wide" data-style="list:none" title="Remove list markers" aria-label="Remove list markers">✕</button>
       </div>
     </div>
+    <div class="fontsrow" role="toolbar" aria-label="More fonts"><span class="fontslbl">More fonts</span><div class="group" id="fonts" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
 
     <div class="edwrap">
     <textarea id="editor" spellcheck="true" placeholder="Write your post here. Select a word or a few lines, then click Bold, a list style or a symbol."></textarea>
@@ -377,7 +383,12 @@
 
     <div class="meta">
       <span class="msg" id="msg" aria-live="polite"></span>
-      <span id="count">0 characters</span>
+      <span><span id="count">0 characters</span><select class="lim" id="limit" aria-label="Character limit">
+        <option value="0">No limit</option>
+        <option value="3000">LinkedIn post, 3,000</option>
+        <option value="1250">LinkedIn comment, 1,250</option>
+        <option value="280">X post, 280</option>
+      </select></span>
     </div>
     <p class="hint">Shortcuts: <kbd id="mod1">Ctrl</kbd>+<kbd>B</kbd> <strong>bold</strong>, <kbd id="mod2">Ctrl</kbd>+<kbd>I</kbd> <em>italic</em>, <kbd id="mod3">Ctrl</kbd>+<kbd>U</kbd> <u>underline</u>. Click a style again to take it off.</p>
 
@@ -554,7 +565,24 @@ function insertSymbol(sym) {
 }
 
 /* ---------- toolbar, keys ---------- */
-['styles', 'lists'].forEach((id) => {
+const FONTS = [
+  ['sansBold', 'Sans bold'], ['sansItalic', 'Sans italic'], ['sansBoldItalic', 'Sans bold italic'], ['sans', 'Sans'],
+  ['script', 'Script'], ['boldScript', 'Bold script'], ['fraktur', 'Fraktur'], ['boldFraktur', 'Bold fraktur'],
+  ['doubleStruck', 'Double'], ['smallCaps', 'Small caps'], ['circled', 'Circled'], ['negativeCircled', 'Dark circles'],
+  ['squared', 'Squared'], ['fullwidth', 'Wide']
+];
+FONTS.forEach(([key, name]) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'tb font';
+  b.dataset.style = key;
+  b.title = name;
+  b.setAttribute('aria-label', name);
+  b.textContent = LBT.convert(name, key);
+  document.getElementById('fonts').appendChild(b);
+});
+
+['styles', 'lists', 'fonts'].forEach((id) => {
   const box = document.getElementById(id);
   // keep the selection and focus in the editor while a button is pressed
   box.addEventListener('mousedown', (e) => e.preventDefault());
@@ -624,9 +652,13 @@ renderSymbols();
 /* ---------- count, draft, copy, clear ---------- */
 function updateCount() {
   const n = Array.from(editor.value).length;
-  countEl.textContent = n.toLocaleString('en') + ' characters';
+  const limit = Number(document.getElementById('limit').value) || 0;
+  countEl.textContent = limit ? n.toLocaleString('en') + ' of ' + limit.toLocaleString('en') + ' characters' : n.toLocaleString('en') + ' characters';
+  countEl.classList.toggle('count-over', limit > 0 && n > limit);
+  countEl.classList.toggle('count-near', limit > 0 && n <= limit && n >= limit * 0.9);
   document.getElementById('pasteBig').hidden = editor.value.length > 0;
 }
+document.getElementById('limit').addEventListener('change', updateCount);
 function saveDraft() {
   try { localStorage.setItem(DRAFT_KEY, editor.value); } catch (e) { /* private mode */ }
 }

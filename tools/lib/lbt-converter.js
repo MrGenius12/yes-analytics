@@ -23,8 +23,57 @@
     // Bold italic has no digits of its own, so digits fall back to bold.
     boldItalic: build(0x1D468, 0x1D482, 0x1D7CE),
     // Monospace has letters and digits.
-    mono: build(0x1D670, 0x1D68A, 0x1D7F6)
+    mono: build(0x1D670, 0x1D68A, 0x1D7F6),
+    // More fonts. Some letters in the script, fraktur and double-struck blocks live elsewhere.
+    script: build(0x1D49C, 0x1D4B6, null, {
+      B: 'ℬ', E: 'ℰ', F: 'ℱ', H: 'ℋ', I: 'ℐ', L: 'ℒ', M: 'ℳ', R: 'ℛ', e: 'ℯ', g: 'ℊ', o: 'ℴ'
+    }),
+    boldScript: build(0x1D4D0, 0x1D4EA, 0x1D7CE),
+    fraktur: build(0x1D504, 0x1D51E, null, { C: 'ℭ', H: 'ℌ', I: 'ℑ', R: 'ℜ', Z: 'ℨ' }),
+    boldFraktur: build(0x1D56C, 0x1D586, 0x1D7CE),
+    doubleStruck: build(0x1D538, 0x1D552, 0x1D7D8, {
+      C: 'ℂ', H: 'ℍ', N: 'ℕ', P: 'ℙ', Q: 'ℚ', R: 'ℝ', Z: 'ℤ'
+    }),
+    sans: build(0x1D5A0, 0x1D5BA, 0x1D7E2),
+    sansBold: build(0x1D5D4, 0x1D5EE, 0x1D7EC),
+    sansItalic: build(0x1D608, 0x1D622, 0x1D7E2),
+    sansBoldItalic: build(0x1D63C, 0x1D656, 0x1D7EC),
+    fullwidth: build(0xFF21, 0xFF41, 0xFF10),
+    circled: circled(),
+    negativeCircled: letters(0x1F150, 0x1F150),
+    squared: letters(0x1F130, 0x1F130),
+    smallCaps: smallCaps()
   };
+
+  // Circled letters and digits live in a few separate blocks.
+  function circled() {
+    const m = build(0x24B6, 0x24D0, null);
+    m['0'] = '⓪';
+    for (let i = 1; i <= 9; i++) m[String(i)] = cp(0x2460 + i - 1);
+    return m;
+  }
+
+  // Letters only, upper and lower case map to the same capital shape.
+  function letters(upperStart) {
+    const m = {};
+    for (let i = 0; i < 26; i++) {
+      m[String.fromCharCode(65 + i)] = cp(upperStart + i);
+      m[String.fromCharCode(97 + i)] = cp(upperStart + i);
+    }
+    return m;
+  }
+
+  // Small capitals: every letter becomes a small capital. "q" and "x" have no
+  // perfect form, so the closest available ones are used.
+  function smallCaps() {
+    const sc = 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ';
+    const m = {};
+    for (let i = 0; i < 26; i++) {
+      m[String.fromCharCode(65 + i)] = sc[i];
+      m[String.fromCharCode(97 + i)] = sc[i];
+    }
+    return m;
+  }
 
   // Reverse map, used to turn styled text back into normal text.
   const REVERSE = {};
