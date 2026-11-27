@@ -125,9 +125,12 @@ const SITES = [
     id: "linkedin",
     name: "LinkedIn",
     countries: "*",
-    supports: { period: true, newest: true, workType: true },
+    supports: { period: true, newest: false, workType: false },
     verified: true,
-    note: "Opens the classic search (with 'Most recent' sorting) instead of the new AI search.",
+    // Nov 2026: LinkedIn's classic search still applies the date filter from a link,
+    // but now ignores sorting (sortBy) and work type (f_WT). Both are still sent,
+    // in case LinkedIn brings them back.
+    note: "Opens the classic search with the date filter, instead of the new AI search. LinkedIn no longer sorts by most recent or filters by work type.",
     build(q) {
       const p = new URLSearchParams();
       p.set("keywords", q.keywords);
